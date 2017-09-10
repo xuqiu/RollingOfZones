@@ -9,8 +9,10 @@ var game_file_list = [
 	"libs/modules/res/res.js",
 	"libs/modules/tiled/tiled.js",
 	"polyfill/promise.js",
+	"bin-debug/Constant/Direction.js",
 	"bin-debug/LoadingUI.js",
 	"bin-debug/Main.js",
+	"bin-debug/MapContainer.js",
 	//----auto game_file_list end----
 ];
 
@@ -46,12 +48,12 @@ egret_native.egretStart = function () {
 		entryClassName: "Main",
 		frameRate: 30,
 		scaleMode: "showAll",
-		contentWidth: 640,
-		contentHeight: 1136,
+		contentWidth: 800,
+		contentHeight: 600,
 		showPaintRect: false,
-		showFPS: false,
+		showFPS: true,
 		fpsStyles: "x:0,y:0,size:12,textColor:0xffffff,bgAlpha:0.9",
-		showLog: false,
+		showLog: true,
 		logFilter: "",
 		maxTouches: 2,
 		textureScaleFactor: 1
