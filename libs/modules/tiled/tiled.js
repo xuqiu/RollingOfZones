@@ -1,16 +1,8 @@
-var __reflect = (this && this.__reflect) || function (p, c, t) {
-    p.__class__ = c, t ? t.push(c) : t = [c], p.__types__ = p.__types__ ? t.concat(p.__types__) : t;
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var tiled;
 (function (tiled) {
     var TMXLayerBase = (function (_super) {
@@ -61,7 +53,6 @@ var tiled;
         return TMXLayerBase;
     }(egret.Sprite));
     tiled.TMXLayerBase = TMXLayerBase;
-    __reflect(TMXLayerBase.prototype, "tiled.TMXLayerBase", ["tiled.ILayer"]);
 })(tiled || (tiled = {}));
 var tiled;
 (function (tiled) {
@@ -141,7 +132,6 @@ var tiled;
         return TMXRenderer;
     }());
     tiled.TMXRenderer = TMXRenderer;
-    __reflect(TMXRenderer.prototype, "tiled.TMXRenderer");
 })(tiled || (tiled = {}));
 var tiled;
 (function (tiled) {
@@ -159,7 +149,6 @@ var tiled;
         return TMXProperty;
     }());
     tiled.TMXProperty = TMXProperty;
-    __reflect(TMXProperty.prototype, "tiled.TMXProperty");
 })(tiled || (tiled = {}));
 var tiled;
 (function (tiled) {
@@ -169,131 +158,130 @@ var tiled;
     var TMXConstants = (function () {
         function TMXConstants() {
         }
-        /**
-         * @version Egret 3.0.3
-         */
-        TMXConstants.TMX_FLIP_H = 0x80000000;
-        /**
-         * @version Egret 3.0.3
-         */
-        TMXConstants.TMX_FLIP_V = 0x40000000;
-        /**
-         * @version Egret 3.0.3
-         */
-        TMXConstants.TMX_FLIP_AD = 0x20000000;
-        /**
-         * @version Egret 3.0.3
-         */
-        TMXConstants.TMX_CLEAR_BIT_MASK = ~(0x80000000 | 0x40000000 | 0x20000000);
-        /**
-         * 图层
-         * @version Egret 3.0.3
-         */
-        TMXConstants.LAYER = "layer";
-        /**
-         * 对象组
-         * @version Egret 3.0.3
-         */
-        TMXConstants.OBJECT_GROUP = "objectgroup";
-        /**
-         * 属性
-         * @version Egret 3.0.3
-         */
-        TMXConstants.PROPERTIES = "properties";
-        /**
-         * 数据
-         * @version Egret 3.0.3
-         */
-        TMXConstants.DATA = "data";
-        /**
-         * 对象
-         * @version Egret 3.0.3
-         */
-        TMXConstants.OBJECT = "object";
-        /**
-         * 图像
-         * @version Egret 3.0.3
-         */
-        TMXConstants.IMAGE = "image";
-        /**
-         * 图像层
-         * @version Egret 3.0.3
-         */
-        TMXConstants.IMAGE_LAYER = "imagelayer";
-        /**
-         * Tile设置
-         * @version Egret 3.0.3
-         */
-        TMXConstants.TILE_SET = "tileset";
-        /**
-         * Tile
-         * @version Egret 3.0.3
-         */
-        TMXConstants.TILE = "tile";
-        /**
-         * Tile偏移
-         * @version Egret 3.0.3
-         */
-        TMXConstants.TILE_OFFSET = "tileoffset";
-        /**
-         * 动画
-         * @version Egret 3.0.3
-         */
-        TMXConstants.ANIMATION = "animation";
-        /**
-         * 默认颜色
-         * @version Egret 3.0.3
-         */
-        TMXConstants.DEFAULT_COLOR = 0xa0a0a4;
-        /**
-         * 绘图索引
-         * @version Egret 3.0.3
-         */
-        TMXConstants.DRAWORDER_INDEX = "index";
-        /**
-         * 多边形
-         * @version Egret 3.0.3
-         */
-        TMXConstants.POLYGON = "polygon";
-        /**
-         * 折线
-         * @version Egret 3.0.3
-         */
-        TMXConstants.POLYLINE = "polyline";
-        /**
-         * 椭圆
-         * @version Egret 3.0.3
-         */
-        TMXConstants.ELLIPSE = "ellipse";
-        /**
-         * tile对象组
-         * @version Egret 3.0.3
-         */
-        TMXConstants.TILE_OBJECT_GROUP = "tileobjectgroup";
-        /**
-         * 正交
-         * @version Egret 3.0.3
-         */
-        TMXConstants.ORIENTATION_ORTHOGONAL = "orthogonal";
-        /**
-         * 等矩
-         * @version Egret 3.0.3
-         */
-        TMXConstants.ORIENTATION_ISOMETRIC = "isometric";
-        /**
-         * 交错
-         * @version Egret 3.0.3
-         */
-        TMXConstants.ORIENTATION_STAGGERED = "staggered";
-        /**
-         * 六角
-         * @version Egret 3.0.3
-         */
-        TMXConstants.ORIENTATION_HEXAGONAL = "hexagonal";
         return TMXConstants;
     }());
+    /**
+     * @version Egret 3.0.3
+     */
+    TMXConstants.TMX_FLIP_H = 0x80000000;
+    /**
+     * @version Egret 3.0.3
+     */
+    TMXConstants.TMX_FLIP_V = 0x40000000;
+    /**
+     * @version Egret 3.0.3
+     */
+    TMXConstants.TMX_FLIP_AD = 0x20000000;
+    /**
+     * @version Egret 3.0.3
+     */
+    TMXConstants.TMX_CLEAR_BIT_MASK = ~(0x80000000 | 0x40000000 | 0x20000000);
+    /**
+     * 图层
+     * @version Egret 3.0.3
+     */
+    TMXConstants.LAYER = "layer";
+    /**
+     * 对象组
+     * @version Egret 3.0.3
+     */
+    TMXConstants.OBJECT_GROUP = "objectgroup";
+    /**
+     * 属性
+     * @version Egret 3.0.3
+     */
+    TMXConstants.PROPERTIES = "properties";
+    /**
+     * 数据
+     * @version Egret 3.0.3
+     */
+    TMXConstants.DATA = "data";
+    /**
+     * 对象
+     * @version Egret 3.0.3
+     */
+    TMXConstants.OBJECT = "object";
+    /**
+     * 图像
+     * @version Egret 3.0.3
+     */
+    TMXConstants.IMAGE = "image";
+    /**
+     * 图像层
+     * @version Egret 3.0.3
+     */
+    TMXConstants.IMAGE_LAYER = "imagelayer";
+    /**
+     * Tile设置
+     * @version Egret 3.0.3
+     */
+    TMXConstants.TILE_SET = "tileset";
+    /**
+     * Tile
+     * @version Egret 3.0.3
+     */
+    TMXConstants.TILE = "tile";
+    /**
+     * Tile偏移
+     * @version Egret 3.0.3
+     */
+    TMXConstants.TILE_OFFSET = "tileoffset";
+    /**
+     * 动画
+     * @version Egret 3.0.3
+     */
+    TMXConstants.ANIMATION = "animation";
+    /**
+     * 默认颜色
+     * @version Egret 3.0.3
+     */
+    TMXConstants.DEFAULT_COLOR = 0xa0a0a4;
+    /**
+     * 绘图索引
+     * @version Egret 3.0.3
+     */
+    TMXConstants.DRAWORDER_INDEX = "index";
+    /**
+     * 多边形
+     * @version Egret 3.0.3
+     */
+    TMXConstants.POLYGON = "polygon";
+    /**
+     * 折线
+     * @version Egret 3.0.3
+     */
+    TMXConstants.POLYLINE = "polyline";
+    /**
+     * 椭圆
+     * @version Egret 3.0.3
+     */
+    TMXConstants.ELLIPSE = "ellipse";
+    /**
+     * tile对象组
+     * @version Egret 3.0.3
+     */
+    TMXConstants.TILE_OBJECT_GROUP = "tileobjectgroup";
+    /**
+     * 正交
+     * @version Egret 3.0.3
+     */
+    TMXConstants.ORIENTATION_ORTHOGONAL = "orthogonal";
+    /**
+     * 等矩
+     * @version Egret 3.0.3
+     */
+    TMXConstants.ORIENTATION_ISOMETRIC = "isometric";
+    /**
+     * 交错
+     * @version Egret 3.0.3
+     */
+    TMXConstants.ORIENTATION_STAGGERED = "staggered";
+    /**
+     * 六角
+     * @version Egret 3.0.3
+     */
+    TMXConstants.ORIENTATION_HEXAGONAL = "hexagonal";
     tiled.TMXConstants = TMXConstants;
-    __reflect(TMXConstants.prototype, "tiled.TMXConstants");
 })(tiled || (tiled = {}));
 var tiled;
 (function (tiled) {
@@ -315,20 +303,19 @@ var tiled;
             _this.texture = texture;
             return _this;
         }
-        /**
-         * 单张图片加载完成
-         * @version Egret 3.0.3
-         */
-        TMXImageLoadEvent.IMAGE_COMPLETE = "complete";
-        /**
-         * 所有图片加载完成
-         * @version Egret 3.0.3
-         */
-        TMXImageLoadEvent.ALL_IMAGE_COMPLETE = "allComplete";
         return TMXImageLoadEvent;
     }(egret.Event));
+    /**
+     * 单张图片加载完成
+     * @version Egret 3.0.3
+     */
+    TMXImageLoadEvent.IMAGE_COMPLETE = "complete";
+    /**
+     * 所有图片加载完成
+     * @version Egret 3.0.3
+     */
+    TMXImageLoadEvent.ALL_IMAGE_COMPLETE = "allComplete";
     tiled.TMXImageLoadEvent = TMXImageLoadEvent;
-    __reflect(TMXImageLoadEvent.prototype, "tiled.TMXImageLoadEvent");
 })(tiled || (tiled = {}));
 var tiled;
 (function (tiled) {
@@ -354,7 +341,6 @@ var tiled;
         return TMXColorLayer;
     }(egret.Sprite));
     tiled.TMXColorLayer = TMXColorLayer;
-    __reflect(TMXColorLayer.prototype, "tiled.TMXColorLayer");
 })(tiled || (tiled = {}));
 var tiled;
 (function (tiled) {
@@ -470,7 +456,6 @@ var tiled;
         return TMXImageLayer;
     }(tiled.TMXLayerBase));
     tiled.TMXImageLayer = TMXImageLayer;
-    __reflect(TMXImageLayer.prototype, "tiled.TMXImageLayer");
 })(tiled || (tiled = {}));
 var tiled;
 (function (tiled) {
@@ -538,10 +523,10 @@ var tiled;
                 for (var i = 0; i < children.length; i++) {
                     var child = children[i];
                     switch (child.localName) {
-                        case tiled.TMXConstants.DATA://解析数据
+                        case tiled.TMXConstants.DATA:
                             _this.parseLayerData(tiled.TMXUtils.decode(child, child.attributes.encoding, child.attributes.compression));
                             break;
-                        case tiled.TMXConstants.PROPERTIES://解析属性
+                        case tiled.TMXConstants.PROPERTIES:
                             _this._properties = _this.tilemap.parseProperties(child);
                             break;
                         default:
@@ -803,7 +788,6 @@ var tiled;
         return TMXLayer;
     }(tiled.TMXLayerBase));
     tiled.TMXLayer = TMXLayer;
-    __reflect(TMXLayer.prototype, "tiled.TMXLayer");
 })(tiled || (tiled = {}));
 var tiled;
 (function (tiled) {
@@ -1167,7 +1151,6 @@ var tiled;
         return TMXTilemap;
     }(egret.Sprite));
     tiled.TMXTilemap = TMXTilemap;
-    __reflect(TMXTilemap.prototype, "tiled.TMXTilemap");
 })(tiled || (tiled = {}));
 var tiled;
 (function (tiled) {
@@ -1266,7 +1249,6 @@ var tiled;
         return TMXImage;
     }(egret.EventDispatcher));
     tiled.TMXImage = TMXImage;
-    __reflect(TMXImage.prototype, "tiled.TMXImage");
 })(tiled || (tiled = {}));
 var tiled;
 (function (tiled) {
@@ -1525,7 +1507,6 @@ var tiled;
         return TMXObject;
     }(egret.Sprite));
     tiled.TMXObject = TMXObject;
-    __reflect(TMXObject.prototype, "tiled.TMXObject");
 })(tiled || (tiled = {}));
 var tiled;
 (function (tiled) {
@@ -1646,7 +1627,6 @@ var tiled;
         return TMXObjectGroup;
     }(egret.Sprite));
     tiled.TMXObjectGroup = TMXObjectGroup;
-    __reflect(TMXObjectGroup.prototype, "tiled.TMXObjectGroup");
 })(tiled || (tiled = {}));
 var tiled;
 (function (tiled) {
@@ -1713,7 +1693,6 @@ var tiled;
         return TMXAnimation;
     }());
     tiled.TMXAnimation = TMXAnimation;
-    __reflect(TMXAnimation.prototype, "tiled.TMXAnimation");
 })(tiled || (tiled = {}));
 var tiled;
 (function (tiled) {
@@ -1920,7 +1899,6 @@ var tiled;
         return TMXHexagonalRenderer;
     }(tiled.TMXRenderer));
     tiled.TMXHexagonalRenderer = TMXHexagonalRenderer;
-    __reflect(TMXHexagonalRenderer.prototype, "tiled.TMXHexagonalRenderer");
 })(tiled || (tiled = {}));
 var tiled;
 (function (tiled) {
@@ -2071,7 +2049,6 @@ var tiled;
         return TMXIsometricRenderer;
     }(tiled.TMXRenderer));
     tiled.TMXIsometricRenderer = TMXIsometricRenderer;
-    __reflect(TMXIsometricRenderer.prototype, "tiled.TMXIsometricRenderer");
 })(tiled || (tiled = {}));
 var tiled;
 (function (tiled) {
@@ -2169,7 +2146,6 @@ var tiled;
         return TMXOrthogonalRenderer;
     }(tiled.TMXRenderer));
     tiled.TMXOrthogonalRenderer = TMXOrthogonalRenderer;
-    __reflect(TMXOrthogonalRenderer.prototype, "tiled.TMXOrthogonalRenderer");
 })(tiled || (tiled = {}));
 var tiled;
 (function (tiled) {
@@ -2225,7 +2201,6 @@ var tiled;
         return TMXAnimationFrame;
     }());
     tiled.TMXAnimationFrame = TMXAnimationFrame;
-    __reflect(TMXAnimationFrame.prototype, "tiled.TMXAnimationFrame");
 })(tiled || (tiled = {}));
 var tiled;
 (function (tiled) {
@@ -2262,50 +2237,6 @@ var tiled;
         return Ellipse;
     }(egret.Sprite));
     tiled.Ellipse = Ellipse;
-    __reflect(Ellipse.prototype, "tiled.Ellipse");
-})(tiled || (tiled = {}));
-var tiled;
-(function (tiled) {
-    var Polygon = (function (_super) {
-        __extends(Polygon, _super);
-        /**
-         * 创建1个新的多边形实例
-         * @param x 水平坐标（单位：像素）
-         * @param y 垂直坐标（单位：像素）
-         * @param points 多边形对应的点数据列表，三角形有三个点数据，n边形有n个点数据
-         * @version Egret 3.0.3
-         */
-        function Polygon(x, y, points) {
-            var _this = _super.call(this) || this;
-            _this.points = points;
-            _this.x = x;
-            _this.y = y;
-            return _this;
-        }
-        /**
-         * 根据参数<code>color</code>绘制多边形，参数为16进制表示形式，例如：0xff0000
-         * @param color 颜色值
-         * @version Egret 3.0.3
-         */
-        Polygon.prototype.draw = function (color) {
-            this.graphics.clear();
-            this.graphics.lineStyle(2, color);
-            this.graphics.beginFill(color, 0.2);
-            if (this.points) {
-                for (var i = 0; i < this.points.length; i++) {
-                    var _data = this.points[i];
-                    if (i == 0)
-                        this.graphics.moveTo(_data[0], _data[1]);
-                    else
-                        this.graphics.lineTo(_data[0], _data[1]);
-                }
-            }
-            this.graphics.endFill();
-        };
-        return Polygon;
-    }(egret.Sprite));
-    tiled.Polygon = Polygon;
-    __reflect(Polygon.prototype, "tiled.Polygon");
 })(tiled || (tiled = {}));
 var tiled;
 (function (tiled) {
@@ -2348,7 +2279,48 @@ var tiled;
         return PolyLine;
     }(egret.Sprite));
     tiled.PolyLine = PolyLine;
-    __reflect(PolyLine.prototype, "tiled.PolyLine");
+})(tiled || (tiled = {}));
+var tiled;
+(function (tiled) {
+    var Polygon = (function (_super) {
+        __extends(Polygon, _super);
+        /**
+         * 创建1个新的多边形实例
+         * @param x 水平坐标（单位：像素）
+         * @param y 垂直坐标（单位：像素）
+         * @param points 多边形对应的点数据列表，三角形有三个点数据，n边形有n个点数据
+         * @version Egret 3.0.3
+         */
+        function Polygon(x, y, points) {
+            var _this = _super.call(this) || this;
+            _this.points = points;
+            _this.x = x;
+            _this.y = y;
+            return _this;
+        }
+        /**
+         * 根据参数<code>color</code>绘制多边形，参数为16进制表示形式，例如：0xff0000
+         * @param color 颜色值
+         * @version Egret 3.0.3
+         */
+        Polygon.prototype.draw = function (color) {
+            this.graphics.clear();
+            this.graphics.lineStyle(2, color);
+            this.graphics.beginFill(color, 0.2);
+            if (this.points) {
+                for (var i = 0; i < this.points.length; i++) {
+                    var _data = this.points[i];
+                    if (i == 0)
+                        this.graphics.moveTo(_data[0], _data[1]);
+                    else
+                        this.graphics.lineTo(_data[0], _data[1]);
+                }
+            }
+            this.graphics.endFill();
+        };
+        return Polygon;
+    }(egret.Sprite));
+    tiled.Polygon = Polygon;
 })(tiled || (tiled = {}));
 var tiled;
 (function (tiled) {
@@ -2522,7 +2494,6 @@ var tiled;
         return TMXTile;
     }(egret.Sprite));
     tiled.TMXTile = TMXTile;
-    __reflect(TMXTile.prototype, "tiled.TMXTile");
 })(tiled || (tiled = {}));
 var tiled;
 (function (tiled) {
@@ -2881,16 +2852,13 @@ var tiled;
         TMXTileset.removeAllTextures = function () {
             for (var url in this.spritesheets) {
                 var spritesheet = this.spritesheets[url];
-                //销毁图像不能显示
-                //spritesheet.dispose();
             }
             this.spritesheets = {};
         };
-        TMXTileset.spritesheets = {};
         return TMXTileset;
     }());
+    TMXTileset.spritesheets = {};
     tiled.TMXTileset = TMXTileset;
-    __reflect(TMXTileset.prototype, "tiled.TMXTileset");
 })(tiled || (tiled = {}));
 var tiled;
 (function (tiled) {
@@ -2984,7 +2952,6 @@ var tiled;
         return TMXTilesetGroup;
     }());
     tiled.TMXTilesetGroup = TMXTilesetGroup;
-    __reflect(TMXTilesetGroup.prototype, "tiled.TMXTilesetGroup");
 })(tiled || (tiled = {}));
 var tiled;
 (function (tiled) {
@@ -3111,11 +3078,10 @@ var tiled;
             }
             return result;
         };
-        Base64._keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
         return Base64;
     }());
+    Base64._keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
     tiled.Base64 = Base64;
-    __reflect(Base64.prototype, "tiled.Base64");
 })(tiled || (tiled = {}));
 var tiled;
 (function (tiled) {
@@ -3192,5 +3158,4 @@ var tiled;
         return TMXUtils;
     }());
     tiled.TMXUtils = TMXUtils;
-    __reflect(TMXUtils.prototype, "tiled.TMXUtils");
 })(tiled || (tiled = {}));

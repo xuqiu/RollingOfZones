@@ -35,21 +35,62 @@ class Main extends egret.DisplayObjectContainer {
      */
     private loadingView: LoadingUI;
 
+    /*设置请求*/
+    private request:egret.HttpRequest;
+    /*设置资源加载路径*/
+    private url:string;
+
     public constructor() {
+        // super();
+        // this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
         super();
-        this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
+        var self:Main=this;
+        var url: string = "resource/FirstZone.tmx";
+        var urlLoader: egret.URLLoader = new egret.URLLoader();
+        urlLoader.dataFormat = egret.URLLoaderDataFormat.TEXT;
+        //load complete
+        urlLoader.addEventListener(egret.Event.COMPLETE, function (event: egret.Event): void {
+            var data: any = egret.XML.parse(event.target.data);
+            var tmxTileMap: tiled.TMXTilemap = new tiled.TMXTilemap(2000, 2000, data, url);
+            tmxTileMap.render();
+            self.addChild(tmxTileMap);
+        }, url);
+        urlLoader.load(new egret.URLRequest(url));
     }
 
-    private onAddToStage(event: egret.Event) {
-        //设置加载进度界面
-        //Config to load process interface
-        this.loadingView = new LoadingUI();
-        this.stage.addChild(this.loadingView);
-
-        //初始化Resource资源加载库
-        //initiate Resource loading library
-        RES.addEventListener(RES.ResourceEvent.CONFIG_COMPLETE, this.onConfigComplete, this);
-        RES.loadConfig("resource/default.res.json", "resource/");
+    // private onAddToStage(event: egret.Event) {
+    //     //设置加载进度界面
+    //     //Config to load process interface
+    //     this.loadingView = new LoadingUI();
+    //     this.stage.addChild(this.loadingView);
+    //
+    //     //初始化Resource资源加载库
+    //     //initiate Resource loading library
+    //     RES.addEventListener(RES.ResourceEvent.CONFIG_COMPLETE, this.onConfigComplete, this);
+    //     RES.loadConfig("resource/default.res.json", "resource/");
+    // }
+    
+    /*加载地图*/
+    private onAddToStage (event: egret.Event) {
+        /*初始化资源加载路径*/
+        this.url = "resource/village.tmx";
+        /*初始化请求*/
+        this.request = new egret.HttpRequest();
+        /*监听资源加载完成事件*/
+        this.request.once( egret.Event.COMPLETE,this.onMapComplete,this);
+        /*发送请求*/
+        this.request.open(this.url,egret.HttpMethod.GET);
+        this.request.send();
+    }
+    /*地图加载完成*/
+    private onMapComplete( event:egret.Event ) {
+        /*获取到地图数据*/
+        var data:any = egret.XML.parse(event.currentTarget.response);
+        /*初始化地图*/
+        var tmxTileMap: tiled.TMXTilemap = new tiled.TMXTilemap(100, 100, data, this.url);
+        tmxTileMap.render();
+        /*将地图添加到显示列表*/
+        this.addChild(tmxTileMap);
     }
 
     /**
