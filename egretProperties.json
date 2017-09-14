@@ -22,6 +22,9 @@
       "name": "res"
     },
     {
+      "name": "dragonBones"
+    },
+    {
       "name": "tiled",
       "path": "../egret-game-library-rc-4.1.0/tiled/libsrc"
     }

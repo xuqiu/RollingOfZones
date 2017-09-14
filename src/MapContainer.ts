@@ -38,12 +38,12 @@ class MapContainer extends egret.Sprite {
                 this.y = this.y - this.cellSize;
                 break;
             case Direction.right:
-                if(this.width + this.x < this.stage.stageWidth)
+                if (this.width + this.x < this.stage.stageWidth)
                     return false;//防止地图溢出
                 this.x = this.x - this.cellSize;
                 break;
             case Direction.left:
-                if(this.x >= 0)
+                if (this.x >= 0)
                     return false;//防止地图溢出
                 this.x = this.x + this.cellSize;
                 break;
