@@ -40,7 +40,7 @@ class Main extends MainFrame {
      * Create a game scene
      */
     public createGameScene(): void {
-        //this.drawMap();
+        this.drawMap();
         //添加显示文本
         this.drawText();
         this.createMotorcycleExp();
@@ -48,55 +48,19 @@ class Main extends MainFrame {
     /**骨骼角色执行的当前动作索引**/
     /**存放骨骼动画的容器**/
     private knight;
-    /**骨骼的实体数据**/
-    private knightWalkDown;
-    private knightWalkUp;
-    private knightWalkLeft;
-    private knightWalkRight;
-    private currentMovement;
+
     /**创建骨骼模型**/
     private createMotorcycleExp():void
     {
-        this.knight = new egret.Sprite();
-
-        this.addChild(this.knight);
+        this.knight = new Knight("knight001_tex_png");
         this.knight.x = 250;
         this.knight.y = 350;
-
-        this.initMovements();
-
-        //启动骨骼动画播放
-        this.currentMovement.animation.play();
-
-        var armatureDisplay = this.currentMovement.getDisplay();
-        this.knight.addChild(armatureDisplay);
-
+        this.mapContainer.addChildAt(this.knight,999);
 
         egret.startTick(this.onTicker, this);
 
     }
 
-    private initMovements():void{
-        //读取一个骨骼数据,并创建实例显示到舞台
-        var skeletonData = RES.getRes("knight_ske_json");
-        var textureData = RES.getRes("knight_tex_json");
-        var texture = RES.getRes("knight001_tex_png");
-
-        var factory = new dragonBones.EgretFactory();
-        factory.addDragonBonesData(factory.parseDragonBonesData(skeletonData));
-        factory.addTextureAtlasData(new dragonBones.EgretTextureAtlas(texture, textureData));
-
-        this.knightWalkDown = factory.buildArmature("walk-down");
-        this.knightWalkLeft = factory.buildArmature("walk-left");
-        this.knightWalkUp = factory.buildArmature("walk-up");
-        this.knightWalkRight = factory.buildArmature("walk-right");
-        dragonBones.WorldClock.clock.add(this.knightWalkDown);
-        dragonBones.WorldClock.clock.add(this.knightWalkLeft);
-        dragonBones.WorldClock.clock.add(this.knightWalkUp);
-        dragonBones.WorldClock.clock.add(this.knightWalkRight);
-
-        this.currentMovement = this.knightWalkDown;
-    }
 
     private _time:number;
 
@@ -117,16 +81,16 @@ class Main extends MainFrame {
 
         if(this._up && this._left){
             this._txInfo.text = "↖";
-            this.move(Direction.left);
+            this.move(Direction.up_left);
         }else if(this._up && this._right){
             this._txInfo.text = "↗";
-            this.move(Direction.right);
+            this.move(Direction.up_right);
         }else if(this._down && this._left){
             this._txInfo.text = "↙";
-            this.move(Direction.left);
+            this.move(Direction.down_left);
         }else if(this._down && this._right){
             this._txInfo.text = "↘";
-            this.move(Direction.right);
+            this.move(Direction.down_right);
         }else if(this._up){
             this._txInfo.text = "↑";
             this.move(Direction.up);
@@ -140,51 +104,21 @@ class Main extends MainFrame {
             this._txInfo.text = "↓";
             this.move(Direction.down);
         }else{
-            this.move(Direction.none);
+            this.move(Direction.stop);
             this._txInfo.text = "stand";
         }
 
         return false;
     }
-    private _lastDirection:Direction;
-    private move(direction:Direction){
-        if(direction == this._lastDirection){
-            return;
-        }
-        this._lastDirection = direction;
-
-        switch (direction) {
-
-            case Direction.none:
-                //为了stop在第0帧,加这么一句 直接stopByFrame的话会有bug(触发后续的keyDown时动作停止)
-                this.currentMovement.animation.gotoAndPlayByFrame(this.currentMovement.name,0);
-                this.currentMovement.animation.stop(this.currentMovement.name);
-                return;
-                break;
-            case Direction.up:
-                this.currentMovement = this.knightWalkUp;
-                break;
-            case Direction.down:
-                this.currentMovement = this.knightWalkDown;
-                break;
-            case Direction.right:
-                this.currentMovement = this.knightWalkRight;
-                break;
-            case Direction.left:
-                this.currentMovement = this.knightWalkLeft;
-                break;
-        }
-
-        this.knight.removeChildren();
-        this.currentMovement.animation.play();
-        var armatureDisplay = this.currentMovement.getDisplay();
-        this.knight.addChild(armatureDisplay);
-
+    public move(direction:Direction){
+        //TODO 判断是地图移动还是人物移动
+        this.knight.move(direction, true);
     }
+    private mapContainer:MapContainer = new MapContainer();
     private drawMap():void{
-        var mapContainer:MapContainer = new MapContainer();
-        this.addChild( mapContainer );
-        mapContainer.init("resource/maps/FirstZone.tmx");
+
+        this.addChild( this.mapContainer );
+        this.mapContainer.init("resource/maps/FirstZone.tmx");
     }
 
     /// 提示信息

@@ -13,10 +13,11 @@ class MapContainer extends egret.Sprite {
         var urlLoader:egret.URLLoader = new egret.URLLoader();
         urlLoader.dataFormat = egret.URLLoaderDataFormat.TEXT;
         urlLoader.addEventListener(egret.Event.COMPLETE, function (event:egret.Event):void {
+            var res = RES.getRes("FirstZone_tmx");
             var data:any = egret.XML.parse(event.target.data);
             var tmxTileMap:tiled.TMXTilemap = new tiled.TMXTilemap(2000, 2000, data, mapUrl);
             tmxTileMap.render();
-            self.addChild(tmxTileMap);
+            self.addChildAt(tmxTileMap,0);
         }, mapUrl);
         urlLoader.load(new egret.URLRequest(mapUrl));
     }
