@@ -20,6 +20,8 @@ class Knight extends egret.Sprite {
     }
 
     private init():void{
+        // this.scaleX = 2;
+        // this.scaleY = 2;
         //读取一个骨骼数据,并创建实例显示到舞台
         var skeletonData = RES.getRes("knight_ske_json");
         var textureData = RES.getRes("knight_tex_json");

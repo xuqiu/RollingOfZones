@@ -52,7 +52,7 @@ class Main extends MainFrame {
     /**创建骨骼模型**/
     private createMotorcycleExp():void
     {
-        this.knight = new Knight("knight001_tex_png");
+        this.knight = new Knight("boss3a_png");
         this.knight.x = 250;
         this.knight.y = 350;
         this.mapContainer.addChildAt(this.knight,999);
@@ -60,8 +60,6 @@ class Main extends MainFrame {
         egret.startTick(this.onTicker, this);
 
     }
-
-
     private _time:number;
 
     private onTicker(timeStamp:number) {
