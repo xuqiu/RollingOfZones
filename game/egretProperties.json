@@ -26,7 +26,11 @@
     },
     {
       "name": "tiled",
-      "path": "../tiled"
+      "path": "../libs/tiled"
+    },
+    {
+      "name": "particle",
+      "path": "../libs/particle"
     }
   ]
 }

@@ -1,37 +1,7 @@
-//////////////////////////////////////////////////////////////////////////////////////
-//
-//  Copyright (c) 2014-present, Egret Technology.
-//  All rights reserved.
-//  Redistribution and use in source and binary forms, with or without
-//  modification, are permitted provided that the following conditions are met:
-//
-//     * Redistributions of source code must retain the above copyright
-//       notice, this list of conditions and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright
-//       notice, this list of conditions and the following disclaimer in the
-//       documentation and/or other materials provided with the distribution.
-//     * Neither the name of the Egret nor the
-//       names of its contributors may be used to endorse or promote products
-//       derived from this software without specific prior written permission.
-//
-//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
-//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
-//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
-//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-//////////////////////////////////////////////////////////////////////////////////////
-
 class Main extends MainFrame {
 
     public constructor() {
         super();
-        
     }
     
 
@@ -40,22 +10,47 @@ class Main extends MainFrame {
      * Create a game scene
      */
     public createGameScene(): void {
-        this.drawMap();
+        //this.drawMap();
         //添加显示文本
         this.drawText();
-        this.createMotorcycleExp();
+        this.drawKnight();
+
+        this.stage.addEventListener(egret.TouchEvent.TOUCH_BEGIN,this.onTouch,this);
+        //获取纹理
+        var texture = RES.getRes("energy_png");
+
+//获取配置
+        var config = RES.getRes("energy_json");
+
+//创建 GravityParticleSystem
+        var particleSystem = new particle.GravityParticleSystem(texture, config);
+
+//启动粒子库
+        particleSystem.start();
+
+//将例子系统添加到舞台
+        this.addChild(particleSystem);
     }
+
+
+    private onTouch(evt:egret.TouchEvent):void{
+        this.knight.fire(evt.stageX, evt.stageY);
+    }
+
+
+
+
     /**骨骼角色执行的当前动作索引**/
     /**存放骨骼动画的容器**/
     private knight;
 
     /**创建骨骼模型**/
-    private createMotorcycleExp():void
+    private drawKnight():void
     {
         this.knight = new Knight("boss3a_png");
-        this.knight.x = 250;
-        this.knight.y = 350;
-        this.mapContainer.addChildAt(this.knight,999);
+        this.knight.x = 30;
+        this.knight.y = 30;
+        this.addChildAt(this.knight,999);
 
         egret.startTick(this.onTicker, this);
 

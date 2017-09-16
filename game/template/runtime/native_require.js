@@ -9,13 +9,16 @@ var game_file_list = [
 	"libs/modules/res/res.js",
 	"libs/modules/dragonBones/dragonBones.js",
 	"libs/modules/tiled/tiled.js",
+	"libs/modules/particle/particle.js",
 	"polyfill/promise.js",
 	"bin-debug/frame/MainFrame.js",
+	"bin-debug/Bullet.js",
 	"bin-debug/Constant/Direction.js",
 	"bin-debug/Knight.js",
 	"bin-debug/LoadingUI.js",
 	"bin-debug/Main.js",
 	"bin-debug/MapContainer.js",
+	"bin-debug/Weapon.js",
 	//----auto game_file_list end----
 ];
 
