@@ -54,7 +54,6 @@ class Knight extends egret.Sprite {
     private _moveTimer:egret.Timer = new egret.Timer(20);
     private _moveX:number;
     private _moveY:number;
-    private static FOOT_SIZE:number = 3;
     //移动动画及位置控制
     public move(direction:Direction, movePosition:boolean) {
 
@@ -127,6 +126,7 @@ class Knight extends egret.Sprite {
 
     }
 
+    private static FOOT_SIZE:number = 6;
     //移动位置
     private moveYX():void {
         this.x += this._moveX * Knight.FOOT_SIZE;
@@ -145,19 +145,15 @@ class Knight extends egret.Sprite {
 
         this.parent.addChild(bullet);
 
-        var bulletTimer:egret.Timer = new egret.Timer(20, 100);
-        bulletTimer.addEventListener(egret.TimerEvent.TIMER, this.letBulletFly, bullet);
-        bulletTimer.addEventListener(egret.TimerEvent.TIMER_COMPLETE, this.letBulletDie, bullet);
+        var bulletTimer:egret.Timer = new egret.Timer(20, 20);
+        bulletTimer.addEventListener(egret.TimerEvent.TIMER, bullet.letBulletFly, bullet);
+        bulletTimer.addEventListener(egret.TimerEvent.TIMER_COMPLETE, bullet.letBulletDie, bullet);
         bulletTimer.start();
     }
 
-    private letBulletFly(evt:egret.TimerEvent) {
-        this.moveYX();
-    }
 
-    private letBulletDie(evt:egret.TimerEvent) {
-        this.parent.removeChild(this);
-    }
+
+    
 
     //endregion
 }

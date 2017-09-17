@@ -1,4 +1,5 @@
 class Main extends MainFrame {
+    public static enemyArray:egret.Sprite[] = [];
 
     public constructor() {
         super();
@@ -14,6 +15,9 @@ class Main extends MainFrame {
         //添加显示文本
         this.drawText();
         this.drawKnight();
+        this.drawEnemy();
+
+        egret.startTick(this.onTicker, this);
 
         this.stage.addEventListener(egret.TouchEvent.TOUCH_BEGIN,this.onTouch,this);
         //获取纹理
@@ -43,6 +47,8 @@ class Main extends MainFrame {
     /**骨骼角色执行的当前动作索引**/
     /**存放骨骼动画的容器**/
     private knight;
+    
+    public enemy;
 
     /**创建骨骼模型**/
     private drawKnight():void
@@ -50,10 +56,20 @@ class Main extends MainFrame {
         this.knight = new Knight("boss3a_png");
         this.knight.x = 30;
         this.knight.y = 30;
+        this.knight.stageX
         this.addChildAt(this.knight,999);
 
-        egret.startTick(this.onTicker, this);
 
+
+    }
+    /**创建骨骼模型**/
+    private drawEnemy():void
+    {
+        this.enemy = new Knight("boss4a_png");
+        this.enemy.x = 200;
+        this.enemy.y = 30;
+        this.addChildAt(this.enemy,999);
+        Main.enemyArray.push(this.enemy);
     }
     private _time:number;
 
