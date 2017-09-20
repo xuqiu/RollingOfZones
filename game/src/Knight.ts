@@ -138,17 +138,11 @@ class Knight extends egret.Sprite {
     public fire(x:number, y:number) {
         //TODO 获取武器
         //TODO 能量检测,频率检测
-        var bullet:Bullet = new Bullet("energy_png", "energy_json", x, y);
+        var bullet:Bullet = Bullet.getBullet("energy_png", "energy_json", x, y);
         bullet.x = this.x;
         bullet.y = this.y;
-        bullet.initFly();
-
         this.parent.addChild(bullet);
-
-        var bulletTimer:egret.Timer = new egret.Timer(20, 20);
-        bulletTimer.addEventListener(egret.TimerEvent.TIMER, bullet.letBulletFly, bullet);
-        bulletTimer.addEventListener(egret.TimerEvent.TIMER_COMPLETE, bullet.letBulletDie, bullet);
-        bulletTimer.start();
+        bullet.fire();
     }
 
 

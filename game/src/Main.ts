@@ -20,20 +20,12 @@ class Main extends MainFrame {
         egret.startTick(this.onTicker, this);
 
         this.stage.addEventListener(egret.TouchEvent.TOUCH_BEGIN,this.onTouch,this);
-        //获取纹理
-        var texture = RES.getRes("energy_png");
 
-//获取配置
-        var config = RES.getRes("energy_json");
-
-//创建 GravityParticleSystem
-        var particleSystem = new particle.GravityParticleSystem(texture, config);
-
-//启动粒子库
-        particleSystem.start();
-
-//将例子系统添加到舞台
-        this.addChild(particleSystem);
+        var spriteSheet:egret.SpriteSheet = RES.getRes("mapCells_json");
+        var bmp = new egret.Bitmap();
+//这里获取第12个宠物头像
+        bmp.texture = spriteSheet.getTexture("sand");
+        this.addChildAt(bmp,0);
     }
 
 

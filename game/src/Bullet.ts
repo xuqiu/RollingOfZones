@@ -1,37 +1,70 @@
+import Timer = egret.Timer;
 /**
  * 子弹,武器的子节点
  */
 class Bullet extends particle.GravityParticleSystem {
+    //子弹缓存,1唯是粒子类型
+    public static BULLET_POOL:Bullet[][]=[];
     private targetX:number;
     private targetY:number;
+    private particle_png:string;
+    private particle_type:string;
 
     /**
      * @param particle_png 粒子纹理
-     * @param particle_json 粒子属性
+     * @param particle_type 粒子类型
      * @param targetX  射击位置,决定子弹图像初始角度和移动方向
      * @param targetY
      */
-    constructor(particle_png:string, particle_json:string, targetX:number, targetY:number) {
-        super(RES.getRes(particle_png), RES.getRes(particle_json));
-        this.targetX = targetX;
-        this.targetY = targetY;
-        this.x = 0;
-        this.y = 0;
-        this.start();
+    constructor(particle_png:string, particle_type:string, targetX:number, targetY:number) {
+        super(RES.getRes(particle_png), RES.getRes(particle_type));
+        this.particle_png = particle_png;
+        this.particle_type = particle_type;
+    }
+
+    public static getBullet(particle_png:string, particle_type:string, targetX:number, targetY:number):Bullet{
+        var cachedBulletArray:Bullet[] = Bullet.BULLET_POOL[particle_type];
+        if(cachedBulletArray == null){
+            cachedBulletArray = [];
+            Bullet.BULLET_POOL[particle_type] = cachedBulletArray;
+        }
+        var cachedBullet = cachedBulletArray.pop();
+        if(cachedBullet == null) {
+            cachedBullet = new Bullet(particle_png, particle_type, targetX, targetY);
+            cachedBulletArray.push(cachedBullet);
+        }else if (particle_png != cachedBullet.particle_png){
+            cachedBullet.particle_png = particle_png
+            cachedBullet.changeTexture(RES.getRes(particle_png));
+        }
+        //重置位置
+        cachedBullet.targetX = targetX;
+        cachedBullet.targetY = targetY;
+        cachedBullet.x = 0;
+        cachedBullet.y = 0;
+        cachedBullet.emitterX = 0;
+        cachedBullet.emitterY = 0;
+        cachedBullet.start();
+        egret.log(Bullet.BULLET_POOL.length,Bullet.BULLET_POOL[particle_type].length);
+        return cachedBullet;
     }
 
     private _moveX:number;
     private _moveY:number;
 
-    public initFly() {
+    private bulletTimer:egret.Timer = new egret.Timer(20, 50);
+    public fire() {
+
         var rX = this.targetX - this.x;
         var rY = this.targetY - this.y;
         var ank = Math.sqrt(rX * rX + rY * rY);
         this._moveX = rX / ank;
         this._moveY = rY / ank;
+        this.bulletTimer.addEventListener(egret.TimerEvent.TIMER, this.letBulletFly, this);
+        this.bulletTimer.addEventListener(egret.TimerEvent.TIMER_COMPLETE, this.reuse, this);
+        this.bulletTimer.start();
     }
 
-    private flySpeed:number = 20;//每一帧的移动距离
+    private flySpeed:number = 10;//每一帧的移动距离
     public fly() {
         this.emitterX += this._moveX * this.flySpeed;
         this.emitterY += this._moveY * this.flySpeed;
@@ -39,27 +72,32 @@ class Bullet extends particle.GravityParticleSystem {
 
     public letBulletFly(evt:egret.TimerEvent) {
         this.fly();
-        this.checkHit();
+        if(this.checkHit()){
+            this.reuse();
+
+        }
 
     }
 
-    public letBulletDie(evt:egret.TimerEvent) {
-        this.stop();
+    private reuse() {
+        this.stop(true);
+        this.bulletTimer.reset();
+        Bullet.BULLET_POOL[this.particle_type].push(this);
     }
 
     /**
      * 检测是否击中敌人
      */
     private fireRadio:number = 20;//伤害范围
-    private checkHit() {
-
+    private checkHit():boolean {
         var enemy:egret.Sprite = Main.enemyArray[0];
         var dX = this.emitterX + this.x - enemy.x;
         var dY = this.emitterY + this.y - enemy.y;
         var d = Math.sqrt(dX * dX + dY * dY);
         if(d<this.fireRadio){
             egret.log("hit");
+            return true;
         }
-        
+        return false;
     }
 }

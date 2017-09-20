@@ -1,6 +1,6 @@
 {
 	"groups":[{
-			"keys":"knight_tex_json,knight_ske_json,free_tileset_version_10_png,village_tmx,bg_jpg,egret_icon_png,description_json,FirstZone_tmx,meta_tiles_png,tmw_desert_spacing_png,bg6_png,default.res_json,knight001_png,knight003_png,magician4a_png,magician4b_png,magician5a_png,magician5b_png,magician6a_png,magician6b_png,monk1a_png,monk1b_png,priest1a_png,priest1b_png,priest2a_png,priest2b_png,priest3a_png,assassin1a_png,assassin1b_png,assassin2a_png,assassin3a_png,assassin3b_png,assassin4a_png,boss1a_png,boss1b_png,boss2a_png,boss3a_png,boss4a_png,collabo1a_png,collabo1b_png,dancer1a_png,dancer1b_png,down1_png,down2_png,gunslinger1a_png,gunslinger1b_png,knight_tex_old_json,knight001_old_png,knight1b_png,knight2a_png,knight2b_png,knight3a_png,knight3b_png,knight4a_png,knight5a_png,magician1a_png,magician2a_png,magician3a_png,magician3b_png,energy_json,energy_png",
+			"keys":"knight_tex_json,knight_ske_json,free_tileset_version_10_png,village_tmx,bg_jpg,egret_icon_png,description_json,FirstZone_tmx,meta_tiles_png,tmw_desert_spacing_png,bg6_png,default.res_json,knight001_png,knight003_png,magician4a_png,magician4b_png,magician5a_png,magician5b_png,magician6a_png,magician6b_png,monk1a_png,monk1b_png,priest1a_png,priest1b_png,priest2a_png,priest2b_png,priest3a_png,assassin1a_png,assassin1b_png,assassin2a_png,assassin3a_png,assassin3b_png,assassin4a_png,boss1a_png,boss1b_png,boss2a_png,boss3a_png,boss4a_png,collabo1a_png,collabo1b_png,dancer1a_png,dancer1b_png,down1_png,down2_png,gunslinger1a_png,gunslinger1b_png,knight_tex_old_json,knight001_old_png,knight1b_png,knight2a_png,knight2b_png,knight3a_png,knight3b_png,knight4a_png,knight5a_png,magician1a_png,magician2a_png,magician3a_png,magician3b_png,energy_json,energy_png,mapCells_json",
 			"name":"All"
 		}],
 	"resources":[
@@ -308,6 +308,12 @@
 			"name":"energy_png",
 			"type":"image",
 			"url":"particle/energy.png"
+		},
+		{
+			"name":"mapCells_json",
+			"subkeys":"meta_tiles,tmw_desert_spacing",
+			"type":"sheet",
+			"url":"maps/mapCells.json"
 		}
 	]
 }
