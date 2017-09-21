@@ -24,19 +24,35 @@ class Main extends MainFrame {
         // this.stage.addEventListener(egret.TouchEvent.TOUCH_BEGIN,this.onTouch,this);
 
 
+        let cellMap: CellMap = new CellMap();
 
-        let spriteSheet: egret.SpriteSheet = RES.getRes("mapCells_json");
-        let bmp = new egret.Bitmap();
-        bmp.texture = spriteSheet.getTexture("sand");
-        bmp.x = 200;
-
-
-
-
-        let cellMap:CellMap = new CellMap();
-        cellMap.addChild(bmp);
+        cellMap.addTrunk(Trunk.getSeed(0,0));
+        cellMap.addTrunk(Trunk.getSeed(-1,0));
+        cellMap.addTrunk(Trunk.getSeed(0,-1));
+        cellMap.addTrunk(Trunk.getSeed(-1,-1));
         this.addChild(cellMap);
-        cellMap.x = 100;
+        cellMap.x = 400;
+        cellMap.y = 300;
+        cellMap.scaleX = 0.7;
+        cellMap.scaleY = 0.7;
+
+        const lineShape: egret.Shape = new egret.Shape();
+        lineShape.graphics.lineStyle(3, 0xccaa99);
+        for(let i = -10; i < 10; i++)
+        {
+            lineShape.graphics.moveTo(0, 320*i);
+            lineShape.graphics.lineTo(1000, 320*i);
+            lineShape.graphics.moveTo(0, 320*i);
+            lineShape.graphics.lineTo(-1000, 320*i);
+            lineShape.graphics.moveTo(320*i, 0);
+            lineShape.graphics.lineTo(320*i, 1000);
+            lineShape.graphics.moveTo(320*i, 0);
+            lineShape.graphics.lineTo(320*i, -1000);
+        }
+
+
+        lineShape.graphics.endFill();
+        cellMap.addChild(lineShape);
 
         const myShape: egret.Shape = new egret.Shape();
 
