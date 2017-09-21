@@ -13,6 +13,7 @@ var game_file_list = [
 	"polyfill/promise.js",
 	"bin-debug/frame/MainFrame.js",
 	"bin-debug/Bullet.js",
+	"bin-debug/CellMap.js",
 	"bin-debug/Constant/Direction.js",
 	"bin-debug/Knight.js",
 	"bin-debug/LoadingUI.js",

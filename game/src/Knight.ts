@@ -74,7 +74,6 @@ class Knight extends egret.Sprite {
                     this._moveTimer.stop();
                 }
                 return;
-                break;
             case Direction.up:
                 this.currentMovement = this.knightWalkUp;
                 this._moveY = -1;

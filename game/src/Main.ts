@@ -13,19 +13,38 @@ class Main extends MainFrame {
     public createGameScene(): void {
         //this.drawMap();
         //添加显示文本
-        this.drawText();
-        this.drawKnight();
+        // this.drawText();
+        //this.drawKnight();
         this.drawEnemy();
+        //
+        // egret.startTick(this.onTicker, this);
+        //
+        // this.stage.addEventListener(egret.TouchEvent.TOUCH_BEGIN,this.onTouch,this);
 
-        egret.startTick(this.onTicker, this);
 
-        this.stage.addEventListener(egret.TouchEvent.TOUCH_BEGIN,this.onTouch,this);
 
-        var spriteSheet:egret.SpriteSheet = RES.getRes("mapCells_json");
-        var bmp = new egret.Bitmap();
-//这里获取第12个宠物头像
+        let spriteSheet: egret.SpriteSheet = RES.getRes("mapCells_json");
+        let bmp = new egret.Bitmap();
         bmp.texture = spriteSheet.getTexture("sand");
-        this.addChildAt(bmp,0);
+        bmp.x = 200;
+
+
+
+
+        let cellMap:CellMap = new CellMap();
+        cellMap.addChild(bmp);
+        this.addChild(cellMap);
+        cellMap.x = 100;
+
+        const myShape: egret.Shape = new egret.Shape();
+
+        myShape.graphics.beginFill(0xff0000, 1);
+        myShape.graphics.drawRect(100,100,5,5);
+        myShape.graphics.endFill();
+
+
+        this.addChild(myShape);
+
     }
 
 

@@ -311,7 +311,6 @@
 		},
 		{
 			"name":"mapCells_json",
-			"subkeys":"meta_tiles,tmw_desert_spacing",
 			"type":"sheet",
 			"url":"maps/mapCells.json"
 		}
