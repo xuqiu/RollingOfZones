@@ -1,3 +1,5 @@
+
+
 class Main extends MainFrame {
     public static enemyArray:egret.Sprite[] = [];
 
@@ -67,7 +69,6 @@ class Main extends MainFrame {
         this.knight = new Knight("boss3a_png");
         this.knight.x = 30;
         this.knight.y = 30;
-        this.knight.stageX
         this.addChildAt(this.knight,999);
 
 
@@ -90,8 +91,8 @@ class Main extends MainFrame {
             this._time = timeStamp;
         }
 
-        var now = timeStamp;
-        var pass = now - this._time;
+        let now = timeStamp;
+        let pass = now - this._time;
         this._time = now;
 
 
