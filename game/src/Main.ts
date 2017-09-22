@@ -24,20 +24,17 @@ class Main extends MainFrame {
         // this.stage.addEventListener(egret.TouchEvent.TOUCH_BEGIN,this.onTouch,this);
 
 
-        let cellMap: CellMap = new CellMap();
+        let cellMap: CellMap = new CellMap("1234");
 
-        cellMap.addTrunk(Trunk.getSeed(0,0));
-        cellMap.addTrunk(Trunk.getSeed(-1,0));
-        cellMap.addTrunk(Trunk.getSeed(0,-1));
-        cellMap.addTrunk(Trunk.getSeed(-1,-1));
+        cellMap.genTrunk(0,0);
         this.addChild(cellMap);
         cellMap.x = 400;
         cellMap.y = 300;
-        cellMap.scaleX = 0.7;
-        cellMap.scaleY = 0.7;
+        cellMap.scaleX = 0.5;
+        cellMap.scaleY = 0.5;
 
         const lineShape: egret.Shape = new egret.Shape();
-        lineShape.graphics.lineStyle(3, 0xccaa99);
+        lineShape.graphics.lineStyle(3, 0xccaadd);
         for(let i = -10; i < 10; i++)
         {
             lineShape.graphics.moveTo(0, 320*i);

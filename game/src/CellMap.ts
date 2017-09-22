@@ -1,9 +1,10 @@
 class CellMap extends egret.Sprite {
     public static CELL_SIZE = 32;
     public static TRUNK_SIZE = 10;
-
-    constructor() {
+    private seed:string = "";
+    constructor(seed:string) {
         super();
+        this.seed=seed;
         this.touchEnabled = true;
         this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onTouch, this);
     }
@@ -13,10 +14,10 @@ class CellMap extends egret.Sprite {
         let cy = Math.floor(evt.localY / CellMap.CELL_SIZE);
         egret.log(cx, cy);
     }
-    private static seed:number = 5;
+
     private static rate:number = 100;
-    public static randomIdx(tx, ty, cx, cy):boolean {
-        let rnd = parseInt(new MD5().hex_md5(CellMap.seed + ","+tx+","+ty+","+cx+","+cy),16)%10000;
+    public static randomIdx(tx, ty, cx, cy, seed):boolean {
+        let rnd = parseInt(new MD5().hex_md5(seed + ","+tx+","+ty+","+cx+","+cy),16)%10000;
         return rnd<CellMap.rate;
     };
 
@@ -26,6 +27,13 @@ class CellMap extends egret.Sprite {
         cell.x = x * CellMap.CELL_SIZE;
         cell.y = y * CellMap.CELL_SIZE;
         this.addChild(cell);
+    }
+    public genTrunk(x: number, y: number){
+        let seedTrunks:Trunk[] = Trunk.getSeeds(x, y, this.seed);
+
+        for(let trunk of seedTrunks){
+            this.addTrunk(trunk);
+        }
     }
 
     public addTrunk(trunk: Trunk) {
@@ -48,7 +56,7 @@ class CellMap extends egret.Sprite {
 
 class Cell extends egret.Bitmap {
     private imgRes: egret.SpriteSheet = RES.getRes("mapCells_json");
-    private imgArray: egret.Texture[] = [this.imgRes.getTexture("red"), this.imgRes.getTexture("green")]
+    private imgArray: egret.Texture[] = [this.imgRes.getTexture("red"), this.imgRes.getTexture("green")];
 
     constructor(idx: number) {
         super();
@@ -73,13 +81,26 @@ class Trunk {
     ];
 
 
-    public static getSeed(tx: number, ty: number): Trunk {
+    public static getSeeds(tx: number, ty: number, seed:string): Trunk[] {
+        let result:Trunk[]=[];
+        result.push(this.getSeed(tx-1,ty-1, seed));
+        result.push(this.getSeed(tx,ty-1, seed));
+        result.push(this.getSeed(tx+1,ty-1, seed));
+        result.push(this.getSeed(tx-1,ty, seed));
+        result.push(this.getSeed(tx,ty, seed));
+        result.push(this.getSeed(tx+1,ty, seed));
+        result.push(this.getSeed(tx-1,ty+1, seed));
+        result.push(this.getSeed(tx,ty+1, seed));
+        result.push(this.getSeed(tx+1,ty+1, seed));
+        return result;
+    }
+    public static getSeed(tx: number, ty: number, seed:string): Trunk {
         let trunk: Trunk = new Trunk();
         trunk.x = tx;
         trunk.y= ty;
         for (let y = 0; y < CellMap.TRUNK_SIZE; y++) {
             for (let x = 0; x < CellMap.TRUNK_SIZE; x++) {
-                if (CellMap.randomIdx(tx, ty, x, y)) {
+                if (CellMap.randomIdx(tx, ty, x, y, seed)) {
                     trunk.data[y][x] = 1;
                 }
 
