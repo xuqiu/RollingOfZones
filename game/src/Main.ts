@@ -26,12 +26,12 @@ class Main extends MainFrame {
 
         let cellMap: CellMap = new CellMap("1234");
 
-        cellMap.genTrunk(0,0);
+        cellMap.genTrunkSeeds(0,0);
         this.addChild(cellMap);
         cellMap.x = 400;
         cellMap.y = 300;
-        cellMap.scaleX = 0.5;
-        cellMap.scaleY = 0.5;
+        cellMap.scaleX = 0.3;
+        cellMap.scaleY = 0.3;
 
         const lineShape: egret.Shape = new egret.Shape();
         lineShape.graphics.lineStyle(3, 0xccaadd);
@@ -46,9 +46,7 @@ class Main extends MainFrame {
             lineShape.graphics.moveTo(320*i, 0);
             lineShape.graphics.lineTo(320*i, -1000);
         }
-
-
-        lineShape.graphics.endFill();
+        lineShape.graphics.moveTo(0, 0);
         cellMap.addChild(lineShape);
 
         const myShape: egret.Shape = new egret.Shape();
