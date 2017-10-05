@@ -2,6 +2,7 @@
 
 class Main extends MainFrame {
     public static enemyArray:egret.Sprite[] = [];
+    public static SCALE=1;
 
     public constructor() {
         super();
@@ -26,12 +27,12 @@ class Main extends MainFrame {
 
         let cellMap: CellMap = new CellMap("1234");
 
-        cellMap.genTrunkSeeds(0,0);
+        cellMap.genTrunksWalk(0,0);
         this.addChild(cellMap);
         cellMap.x = 400;
         cellMap.y = 300;
-        cellMap.scaleX = 0.3;
-        cellMap.scaleY = 0.3;
+        cellMap.scaleX = Main.SCALE;
+        cellMap.scaleY = Main.SCALE;
 
         const lineShape: egret.Shape = new egret.Shape();
         lineShape.graphics.lineStyle(3, 0xccaadd);
