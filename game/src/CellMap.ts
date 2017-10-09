@@ -1,11 +1,11 @@
 class CellMap extends egret.Sprite {
     public static CELL_SIZE = 32;
     public static TRUNK_SIZE = 10;
-    private seed: string = "asdfgh";
+    private seed: string = "i am seed";
     private trunkCache: Trunk[] = [];
     private renderedTrunkCache: Trunk[] = [];
     private cellCache: Cell[] = [];
-    private seedCache: Trunk[] = [];
+
 
     constructor(seed: string) {
         super();
@@ -19,7 +19,7 @@ class CellMap extends egret.Sprite {
         let cy = Math.floor(evt.localY / CellMap.CELL_SIZE);
         let tx = Math.floor(cx / CellMap.TRUNK_SIZE);
         let ty = Math.floor(cy / CellMap.TRUNK_SIZE);
-        this.genTrunksWalk(tx, ty);
+        this.renderTrunks(tx, ty);
     }
 
     private static rate: number = 20;
@@ -34,26 +34,66 @@ class CellMap extends egret.Sprite {
     }
 
 
-    public addCell(x: number, y: number, idx: number) {
-        let cell: Cell = Cell.getByType(idx);
+    public addCell(x: number, y: number) {
+        let cellDate = this.getCellDate(x, y);
+        let renderType = 0;
+        let downData = this.getCellDate(x, y+1);
+        let upData = this.getCellDate(x, y-1);
+        if(cellDate ==1 &&
+            (downData == 0 || upData == 0)){
+            renderType = 1;
+        }
+        let cell: Cell = Cell.getByType(renderType);
         cell.x = x * CellMap.CELL_SIZE;
         cell.y = y * CellMap.CELL_SIZE;
         this.cellCache[x + "," + y] = cell;
         this.addChild(cell);
     }
 
+    public getCellDate(x: number, y: number): number {
+        let tx = Math.floor(x / CellMap.TRUNK_SIZE);
+        let ty = Math.floor(y / CellMap.TRUNK_SIZE);
+        let cx = x % CellMap.TRUNK_SIZE;
+        let cy = y % CellMap.TRUNK_SIZE;
+        if (cx < 0) {
+            cx = CellMap.TRUNK_SIZE + cx;
+        }
+        if (cy < 0) {
+            cy = CellMap.TRUNK_SIZE + cy;
+        }
+
+        let cachedTrunk = this.trunkCache[tx + "," + ty];
+        return cachedTrunk.data[cy][cx];
+    }
+
     public removeCell(x: number, y: number) {
         this.removeChild(this.cellCache[x + "," + y]);
     }
 
+    /**
+     * 渲染距离1,既以当前位置为中心 3x3 的范围
+     * 为了渲染准确,地图数据加载范围多一个既 5x5
+     * 为了生成地图数据准确(种子生成地图的唯一性),种子地图加载范围比数据多2格 7*7
+     */
     public static RENDER_RANGE = 1;
 
-    public genTrunksWalk(tx: number, ty: number) {
-        for (let sy = ty - CellMap.RENDER_RANGE; sy <= ty + CellMap.RENDER_RANGE; sy++) {
-            for (let sx = tx - CellMap.RENDER_RANGE; sx <= tx + CellMap.RENDER_RANGE; sx++) {
-                this.genTrunkSeeds(sx, sy);
+    public renderTrunks(tx: number, ty: number) {
+        let dataRange = CellMap.RENDER_RANGE + 1;
+        //先生成地图数据,放到缓存
+        for (let sy = ty - dataRange; sy <= ty + dataRange; sy++) {
+            for (let sx = tx - dataRange; sx <= tx + dataRange; sx++) {
+                this.genTrunkBySeeds(sx, sy);
             }
         }
+        //然后再渲染
+        for (let sy = ty - CellMap.RENDER_RANGE; sy <= ty + CellMap.RENDER_RANGE; sy++) {
+            for (let sx = tx - CellMap.RENDER_RANGE; sx <= tx + CellMap.RENDER_RANGE; sx++) {
+                //先放到缓存里
+                this.renderTrunk(sx, sy);
+            }
+        }
+
+        //移动地图到中心,后期会改为以人物为中心
         this.x = 400 - tx * CellMap.CELL_SIZE * CellMap.TRUNK_SIZE * Main.SCALE;
         this.y = 300 - ty * CellMap.CELL_SIZE * CellMap.TRUNK_SIZE * Main.SCALE;
         //回收外圈资源
@@ -61,7 +101,7 @@ class CellMap extends egret.Sprite {
             for (let sx = tx - CellMap.RENDER_RANGE - 1; sx <= tx + CellMap.RENDER_RANGE + 1; sx++) {
                 let renderedTrunk = this.renderedTrunkCache[sx + "," + sy];
                 if ((Math.abs(sx - tx) > CellMap.RENDER_RANGE
-                    || Math.abs(sy - ty) > CellMap.RENDER_RANGE)
+                        || Math.abs(sy - ty) > CellMap.RENDER_RANGE)
                     && renderedTrunk) {
 
                     this.removeTrunk(renderedTrunk);
@@ -71,19 +111,27 @@ class CellMap extends egret.Sprite {
         }
     }
 
-    public genTrunkSeeds(cx: number, cy: number) {
+    private renderTrunk(cx: number, cy: number) {
         if (this.renderedTrunkCache[cx + "," + cy]) {
             return;
         }
         let cachedTrunk = this.trunkCache[cx + "," + cy];
+        this.addTrunk(cachedTrunk);
+
+    }
+
+    public genTrunkBySeeds(cx: number, cy: number) {
+        let cachedTrunk = this.trunkCache[cx + "," + cy];
         if (cachedTrunk) {
-            this.addTrunk(cachedTrunk);
             return;
         }
+
+        //获取种子地图
         let seedTrunks: Trunk[] = Trunk.getSeeds(cx, cy, this.seed);
 
         let seedPointArray: number[][] = [];
 
+        //获取种子地图里的噪点数据
         for (let trunk of seedTrunks) {
             for (let y = 0; y < CellMap.TRUNK_SIZE; y++) {
                 for (let x = 0; x < CellMap.TRUNK_SIZE; x++) {
@@ -101,7 +149,7 @@ class CellMap extends egret.Sprite {
         let trunkCenter: Trunk = new Trunk();
         trunkCenter.x = cx;
         trunkCenter.y = cy;
-
+        //根据噪点数据画椭圆(以seed随机)
         for (let seedPoint of seedPointArray) {
             //随机椭圆 需要生成3个随机数
             //第二个焦点相对本焦点的x
@@ -116,8 +164,10 @@ class CellMap extends egret.Sprite {
             //随机半径至少大于两个焦点的距离
             rr = rr + disF;
             seedPoint.push(rr);
-            egret.log(seedPoint[0], seedPoint[1], seedPoint[2], seedPoint[3], seedPoint[4]);
+            //egret.log(seedPoint[0], seedPoint[1], seedPoint[2], seedPoint[3], seedPoint[4]);
         }
+
+        //根据噪点椭圆生成地图数据
         for (let y = 0; y < CellMap.TRUNK_SIZE; y++) {
             for (let x = 0; x < CellMap.TRUNK_SIZE; x++) {
                 for (let seedPoint of seedPointArray) {
@@ -125,7 +175,7 @@ class CellMap extends egret.Sprite {
                     let ty = cy * CellMap.TRUNK_SIZE + y;
                     let dis1 = CellMap.dis(tx, ty, seedPoint[0], seedPoint[1]);
                     let dis2 = CellMap.dis(tx, ty, seedPoint[2], seedPoint[3]);
-                    if (dis1 + dis2 < seedPoint[4]) {
+                    if (dis1 + dis2 <= seedPoint[4]) {
                         trunkCenter.data[y][x] = 1;
                         break;
                     }
@@ -133,7 +183,6 @@ class CellMap extends egret.Sprite {
             }
         }
         this.trunkCache[cx + "," + cy] = trunkCenter;
-        this.addTrunk(trunkCenter);
     }
 
     public static dis(x1: number, y1: number, x2: number, y2: number,): number {
@@ -146,12 +195,8 @@ class CellMap extends egret.Sprite {
         this.renderedTrunkCache[trunk.x + "," + trunk.y] = trunk;
         for (let y = 0; y < CellMap.TRUNK_SIZE; y++) {
             for (let x = 0; x < CellMap.TRUNK_SIZE; x++) {
-                let idx = 0;
-                idx = trunk.data[y][x];
-
                 this.addCell(trunk.x * CellMap.TRUNK_SIZE + x,
-                    trunk.y * CellMap.TRUNK_SIZE + y,
-                    idx);
+                    trunk.y * CellMap.TRUNK_SIZE + y);
             }
         }
 
@@ -170,7 +215,7 @@ class CellMap extends egret.Sprite {
 
 class CellUnit extends egret.Bitmap {
     private imgRes: egret.SpriteSheet = RES.getRes("grass_json");
-    private imgArray: egret.Texture[]=[this.imgRes.getTexture("green"), this.imgRes.getTexture("rock")];
+    private imgArray: egret.Texture[] = [this.imgRes.getTexture("green"), this.imgRes.getTexture("rock")];
 
     constructor(idx: number) {
         super();
@@ -188,22 +233,22 @@ class Cell extends egret.Sprite {
         this.addChild(cellUnit1);
 
         let cellUnit2 = new CellUnit(cu2);
-        cellUnit2.x = 17;
+        cellUnit2.x = 16;
         this.addChild(cellUnit2);
         let cellUnit3 = new CellUnit(cu3);
-        cellUnit3.y = 17;
+        cellUnit3.y = 16;
         this.addChild(cellUnit3);
         let cellUnit4 = new CellUnit(cu4);
-        cellUnit4.x = 17;
-        cellUnit4.y = 17;
+        cellUnit4.x = 16;
+        cellUnit4.y = 16;
         this.addChild(cellUnit4);
     }
 
     public static getByType(type: number): Cell {
-        if(!Cell.BLANK){
+        if (!Cell.BLANK) {
             Cell.BLANK = new Cell(0, 0, 0, 0);
         }
-        if(!Cell.PLAT){
+        if (!Cell.PLAT) {
             Cell.PLAT = new Cell(0, 0, 1, 1);
         }
         switch (type) {
@@ -216,8 +261,9 @@ class Cell extends egret.Sprite {
 }
 
 
-
 class Trunk {
+    //缓存种子
+    private static seedCache: Trunk[] = [];
     public x: number = 0;
     public y: number = 0;
     public data: number[][] = [
@@ -236,9 +282,15 @@ class Trunk {
 
     public static getSeeds(tx: number, ty: number, seed: string): Trunk[] {
         let result: Trunk[] = [];
-        for (let sy = ty - 3; sy <= ty + 3; sy++) {
-            for (let sx = tx - 2; sx <= tx + 2; sx++) {
-                result.push(this.getSeed(sx, sy, seed));
+        let seedRange = 2;
+        for (let sy = ty - seedRange; sy <= ty + seedRange; sy++) {
+            for (let sx = tx - seedRange; sx <= tx + seedRange; sx++) {
+                let cachedSeedTrunk = Trunk.seedCache[sx + "," + sy];
+                if (!cachedSeedTrunk) {
+                    cachedSeedTrunk = this.getSeed(sx, sy, seed);
+                    Trunk.seedCache[sx + "," + sy] = cachedSeedTrunk;
+                }
+                result.push(cachedSeedTrunk);
             }
         }
         return result;
