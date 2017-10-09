@@ -2,7 +2,7 @@
 
 class Main extends MainFrame {
     public static enemyArray:egret.Sprite[] = [];
-    public static SCALE=1;
+    public static SCALE=0.3;
 
     public constructor() {
         super();

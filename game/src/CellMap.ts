@@ -2,10 +2,10 @@ class CellMap extends egret.Sprite {
     public static CELL_SIZE = 32;
     public static TRUNK_SIZE = 10;
     private seed: string = "asdfgh";
-    private trunkCache:Trunk[] = [];
-    private renderedTrunkCache:Trunk[] = [];
-    private cellCache:Cell[] = [];
-    private seedCache:Trunk[] = [];
+    private trunkCache: Trunk[] = [];
+    private renderedTrunkCache: Trunk[] = [];
+    private cellCache: Cell[] = [];
+    private seedCache: Trunk[] = [];
 
     constructor(seed: string) {
         super();
@@ -25,41 +25,44 @@ class CellMap extends egret.Sprite {
     private static rate: number = 20;
 
     public static randomIdx(tx, ty, cx, cy, seed): boolean {
-        let rnd = CellMap.randomByMd5(seed + "," + tx + "," + ty + "," + cx + "," + cy,10000);
+        let rnd = CellMap.randomByMd5(seed + "," + tx + "," + ty + "," + cx + "," + cy, 10000);
         return rnd < CellMap.rate;
     };
-    public static randomByMd5(src:string,range:number):number{
+
+    public static randomByMd5(src: string, range: number): number {
         return parseInt(new MD5().hex_md5(src), 16) % range;
     }
 
 
     public addCell(x: number, y: number, idx: number) {
-        let cell: Cell = new Cell(idx);
+        let cell: Cell = Cell.getByType(idx);
         cell.x = x * CellMap.CELL_SIZE;
         cell.y = y * CellMap.CELL_SIZE;
-        this.cellCache[x+","+y] = cell;
+        this.cellCache[x + "," + y] = cell;
         this.addChild(cell);
     }
+
     public removeCell(x: number, y: number) {
-        this.removeChild(this.cellCache[x+","+y]);
+        this.removeChild(this.cellCache[x + "," + y]);
     }
 
-    public static RENDER_RANGE=1;
+    public static RENDER_RANGE = 1;
+
     public genTrunksWalk(tx: number, ty: number) {
-        for(let sy = ty-CellMap.RENDER_RANGE;sy<=ty+CellMap.RENDER_RANGE;sy++){
-            for(let sx = tx-CellMap.RENDER_RANGE;sx<=tx+CellMap.RENDER_RANGE;sx++){
-                this.genTrunkSeeds(sx,sy);
+        for (let sy = ty - CellMap.RENDER_RANGE; sy <= ty + CellMap.RENDER_RANGE; sy++) {
+            for (let sx = tx - CellMap.RENDER_RANGE; sx <= tx + CellMap.RENDER_RANGE; sx++) {
+                this.genTrunkSeeds(sx, sy);
             }
         }
-        this.x = 400 - tx*CellMap.CELL_SIZE*CellMap.TRUNK_SIZE*Main.SCALE;
-        this.y = 300 - ty*CellMap.CELL_SIZE*CellMap.TRUNK_SIZE*Main.SCALE;
+        this.x = 400 - tx * CellMap.CELL_SIZE * CellMap.TRUNK_SIZE * Main.SCALE;
+        this.y = 300 - ty * CellMap.CELL_SIZE * CellMap.TRUNK_SIZE * Main.SCALE;
         //回收外圈资源
-        for(let sy = ty-CellMap.RENDER_RANGE-1;sy<=ty+CellMap.RENDER_RANGE+1;sy++){
-            for(let sx = tx-CellMap.RENDER_RANGE-1;sx<=tx+CellMap.RENDER_RANGE+1;sx++){
-                let renderedTrunk = this.renderedTrunkCache[sx+","+sy];
-                if((Math.abs(sx-tx)>CellMap.RENDER_RANGE
-                    ||Math.abs(sy-ty)>CellMap.RENDER_RANGE)
-                    &&renderedTrunk){
+        for (let sy = ty - CellMap.RENDER_RANGE - 1; sy <= ty + CellMap.RENDER_RANGE + 1; sy++) {
+            for (let sx = tx - CellMap.RENDER_RANGE - 1; sx <= tx + CellMap.RENDER_RANGE + 1; sx++) {
+                let renderedTrunk = this.renderedTrunkCache[sx + "," + sy];
+                if ((Math.abs(sx - tx) > CellMap.RENDER_RANGE
+                    || Math.abs(sy - ty) > CellMap.RENDER_RANGE)
+                    && renderedTrunk) {
 
                     this.removeTrunk(renderedTrunk);
                 }
@@ -69,17 +72,17 @@ class CellMap extends egret.Sprite {
     }
 
     public genTrunkSeeds(cx: number, cy: number) {
-        if(this.renderedTrunkCache[cx+","+cy]){
+        if (this.renderedTrunkCache[cx + "," + cy]) {
             return;
         }
-        let cachedTrunk = this.trunkCache[cx+","+cy];
-        if(cachedTrunk){
+        let cachedTrunk = this.trunkCache[cx + "," + cy];
+        if (cachedTrunk) {
             this.addTrunk(cachedTrunk);
             return;
         }
         let seedTrunks: Trunk[] = Trunk.getSeeds(cx, cy, this.seed);
 
-        let seedPointArray:number[][] = [];
+        let seedPointArray: number[][] = [];
 
         for (let trunk of seedTrunks) {
             for (let y = 0; y < CellMap.TRUNK_SIZE; y++) {
@@ -95,51 +98,52 @@ class CellMap extends egret.Sprite {
         }
 
 
-        let trunkCenter:Trunk = new Trunk();
+        let trunkCenter: Trunk = new Trunk();
         trunkCenter.x = cx;
         trunkCenter.y = cy;
 
-        for(let seedPoint of seedPointArray){
+        for (let seedPoint of seedPointArray) {
             //随机椭圆 需要生成3个随机数
             //第二个焦点相对本焦点的x
-            let rx = CellMap.randomByMd5(this.seed + "," + seedPoint[0] + "," + seedPoint[1] + "," + "x",20);
+            let rx = CellMap.randomByMd5(this.seed + "," + seedPoint[0] + "," + seedPoint[1] + "," + "x", 20);
             seedPoint.push(seedPoint[0] + rx);
             //第二个焦点相对本焦点的y
-            let ry = CellMap.randomByMd5(this.seed + "," + seedPoint[0] + "," + seedPoint[1] + "," + "y",20);
+            let ry = CellMap.randomByMd5(this.seed + "," + seedPoint[0] + "," + seedPoint[1] + "," + "y", 20);
             seedPoint.push(seedPoint[1] + ry);
             //半径
-            let rr = CellMap.randomByMd5(this.seed + "," + seedPoint[0] + "," + seedPoint[1] + "," + "r",10);
+            let rr = CellMap.randomByMd5(this.seed + "," + seedPoint[0] + "," + seedPoint[1] + "," + "r", 10);
             let disF = Math.ceil(Math.sqrt(rx * rx + ry * ry));
             //随机半径至少大于两个焦点的距离
-            rr = rr +disF;
+            rr = rr + disF;
             seedPoint.push(rr);
-            egret.log(seedPoint[0],seedPoint[1],seedPoint[2],seedPoint[3],seedPoint[4]);
+            egret.log(seedPoint[0], seedPoint[1], seedPoint[2], seedPoint[3], seedPoint[4]);
         }
         for (let y = 0; y < CellMap.TRUNK_SIZE; y++) {
             for (let x = 0; x < CellMap.TRUNK_SIZE; x++) {
-                for(let seedPoint of seedPointArray){
+                for (let seedPoint of seedPointArray) {
                     let tx = cx * CellMap.TRUNK_SIZE + x;
                     let ty = cy * CellMap.TRUNK_SIZE + y;
-                    let dis1 = CellMap.dis(tx,ty,seedPoint[0],seedPoint[1]);
-                    let dis2 = CellMap.dis(tx,ty,seedPoint[2],seedPoint[3]);
-                    if(dis1 + dis2 < seedPoint[4]){
+                    let dis1 = CellMap.dis(tx, ty, seedPoint[0], seedPoint[1]);
+                    let dis2 = CellMap.dis(tx, ty, seedPoint[2], seedPoint[3]);
+                    if (dis1 + dis2 < seedPoint[4]) {
                         trunkCenter.data[y][x] = 1;
                         break;
                     }
                 }
             }
         }
-        this.trunkCache[cx+","+cy]=trunkCenter;
+        this.trunkCache[cx + "," + cy] = trunkCenter;
         this.addTrunk(trunkCenter);
     }
-    public static dis(x1:number,y1:number,x2:number,y2:number,):number{
-        let dx = x1-x2;
-        let dy = y1-y2;
+
+    public static dis(x1: number, y1: number, x2: number, y2: number,): number {
+        let dx = x1 - x2;
+        let dy = y1 - y2;
         return Math.ceil(Math.sqrt(dx * dx + dy * dy));
     }
 
     public addTrunk(trunk: Trunk) {
-        this.renderedTrunkCache[trunk.x+","+trunk.y]=trunk;
+        this.renderedTrunkCache[trunk.x + "," + trunk.y] = trunk;
         for (let y = 0; y < CellMap.TRUNK_SIZE; y++) {
             for (let x = 0; x < CellMap.TRUNK_SIZE; x++) {
                 let idx = 0;
@@ -152,8 +156,9 @@ class CellMap extends egret.Sprite {
         }
 
     }
+
     public removeTrunk(trunk: Trunk) {
-        this.renderedTrunkCache[trunk.x+","+trunk.y] = null;
+        this.renderedTrunkCache[trunk.x + "," + trunk.y] = null;
         for (let y = 0; y < CellMap.TRUNK_SIZE; y++) {
             for (let x = 0; x < CellMap.TRUNK_SIZE; x++) {
                 this.removeCell(trunk.x * CellMap.TRUNK_SIZE + x,
@@ -163,16 +168,54 @@ class CellMap extends egret.Sprite {
     }
 }
 
-
-class Cell extends egret.Bitmap {
+class CellUnit extends egret.Bitmap {
     private imgRes: egret.SpriteSheet = RES.getRes("grass_json");
-    private imgArray: egret.Texture[] = [this.imgRes.getTexture("green"), this.imgRes.getTexture("rock")];
+    private imgArray: egret.Texture[]=[this.imgRes.getTexture("green"), this.imgRes.getTexture("rock")];
 
     constructor(idx: number) {
         super();
         this.texture = this.imgArray[idx];
     }
 }
+
+class Cell extends egret.Sprite {
+    public static BLANK: Cell;
+    public static PLAT: Cell;
+
+    constructor(cu1: number, cu2: number, cu3: number, cu4: number) {
+        super();
+        let cellUnit1 = new CellUnit(cu1);
+        this.addChild(cellUnit1);
+
+        let cellUnit2 = new CellUnit(cu2);
+        cellUnit2.x = 17;
+        this.addChild(cellUnit2);
+        let cellUnit3 = new CellUnit(cu3);
+        cellUnit3.y = 17;
+        this.addChild(cellUnit3);
+        let cellUnit4 = new CellUnit(cu4);
+        cellUnit4.x = 17;
+        cellUnit4.y = 17;
+        this.addChild(cellUnit4);
+    }
+
+    public static getByType(type: number): Cell {
+        if(!Cell.BLANK){
+            Cell.BLANK = new Cell(0, 0, 0, 0);
+        }
+        if(!Cell.PLAT){
+            Cell.PLAT = new Cell(0, 0, 1, 1);
+        }
+        switch (type) {
+            case 1:
+                return new Cell(0, 0, 1, 1);
+            default:
+                return new Cell(0, 0, 0, 0);
+        }
+    }
+}
+
+
 
 class Trunk {
     public x: number = 0;
@@ -193,8 +236,8 @@ class Trunk {
 
     public static getSeeds(tx: number, ty: number, seed: string): Trunk[] {
         let result: Trunk[] = [];
-        for(let sy = ty-3;sy<=ty+3;sy++){
-            for(let sx = tx-2;sx<=tx+2;sx++){
+        for (let sy = ty - 3; sy <= ty + 3; sy++) {
+            for (let sx = tx - 2; sx <= tx + 2; sx++) {
                 result.push(this.getSeed(sx, sy, seed));
             }
         }
