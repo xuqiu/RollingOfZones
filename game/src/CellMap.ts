@@ -36,14 +36,62 @@ class CellMap extends egret.Sprite {
 
     public addCell(x: number, y: number) {
         let cellDate = this.getCellDate(x, y);
-        let renderType = 0;
-        let downData = this.getCellDate(x, y+1);
-        let upData = this.getCellDate(x, y-1);
-        if(cellDate ==1 &&
-            (downData == 0 || upData == 0)){
-            renderType = 1;
+        let cell: Cell;
+        if(cellDate == 0){
+            cell = Cell.getByType("n");
+        }else if (cellDate == 1) {
+            let renderType;
+            let upData = this.getCellDate(x, y - 1);
+            let downData = this.getCellDate(x, y + 1);
+            let leftData = this.getCellDate(x - 1, y);
+            let rightData = this.getCellDate(x + 1, y);
+
+            let ulData = this.getCellDate(x-1, y - 1);
+            let urData = this.getCellDate(x+1, y - 1);
+            let dlData = this.getCellDate(x - 1, y+1);
+            let drData = this.getCellDate(x + 1, y+1);
+
+
+            if (upData == 0 && downData == 0 && leftData == 0 && rightData == 0) {
+                renderType = "hs";
+            } else if (upData == 1 && downData == 0 && leftData == 0 && rightData == 0) {
+                renderType = "hds";
+            } else if (upData == 0 && downData == 1 && leftData == 0 && rightData == 0) {
+                renderType = "hus";
+            } else if (upData == 0 && downData == 0 && leftData == 1 && rightData == 0) {
+                renderType = "hrs";
+            } else if (upData == 0 && downData == 0 && leftData == 0 && rightData == 1) {
+                renderType = "hls";
+            } else if (upData == 1 && downData == 1 && leftData == 0 && rightData == 0) {
+                renderType = "hlr";
+            } else if (upData == 1 && downData == 0 && leftData == 1 && rightData == 0) {
+                renderType = "hdr";
+            } else if (upData == 1 && downData == 0 && leftData == 0 && rightData == 1) {
+                renderType = "hdl";
+            } else if (upData == 0 && downData == 1 && leftData == 1 && rightData == 0) {
+                renderType = "hur";
+            } else if (upData == 0 && downData == 1 && leftData == 0 && rightData == 1) {
+                renderType = "hul";
+            } else if (upData == 0 && downData == 0 && leftData == 1 && rightData == 1) {
+                renderType = "hud";
+            } else if (upData == 1 && downData == 1 && leftData == 1 && rightData == 0) {
+                renderType = "hr";
+            } else if (upData == 1 && downData == 1 && leftData == 0 && rightData == 1) {
+                renderType = "hl";
+            } else if (upData == 1 && downData == 0 && leftData == 1 && rightData == 1) {
+                renderType = "hd";
+            } else if (upData == 0 && downData == 1 && leftData == 1 && rightData == 1) {
+                renderType = "hu";
+            }
+            if(renderType){
+                cell = Cell.getByType(renderType);
+            }else{
+                cell = Cell.getByCorner(ulData,urData,dlData,drData);
+            }
         }
-        let cell: Cell = Cell.getByType(renderType);
+
+
+
         cell.x = x * CellMap.CELL_SIZE;
         cell.y = y * CellMap.CELL_SIZE;
         this.cellCache[x + "," + y] = cell;
@@ -94,8 +142,8 @@ class CellMap extends egret.Sprite {
         }
 
         //移动地图到中心,后期会改为以人物为中心
-        this.x = 400 - tx * CellMap.CELL_SIZE * CellMap.TRUNK_SIZE * Main.SCALE;
-        this.y = 300 - ty * CellMap.CELL_SIZE * CellMap.TRUNK_SIZE * Main.SCALE;
+        this.x = 300 - tx * CellMap.CELL_SIZE * CellMap.TRUNK_SIZE * Main.SCALE;
+        this.y = 200 - ty * CellMap.CELL_SIZE * CellMap.TRUNK_SIZE * Main.SCALE;
         //回收外圈资源
         for (let sy = ty - CellMap.RENDER_RANGE - 1; sy <= ty + CellMap.RENDER_RANGE + 1; sy++) {
             for (let sx = tx - CellMap.RENDER_RANGE - 1; sx <= tx + CellMap.RENDER_RANGE + 1; sx++) {
@@ -215,19 +263,16 @@ class CellMap extends egret.Sprite {
 
 class CellUnit extends egret.Bitmap {
     private imgRes: egret.SpriteSheet = RES.getRes("grass_json");
-    private imgArray: egret.Texture[] = [this.imgRes.getTexture("green"), this.imgRes.getTexture("rock")];
 
-    constructor(idx: number) {
+    constructor(tex: string) {
         super();
-        this.texture = this.imgArray[idx];
+        this.texture = this.imgRes.getTexture(tex);
     }
 }
 
 class Cell extends egret.Sprite {
-    public static BLANK: Cell;
-    public static PLAT: Cell;
 
-    constructor(cu1: number, cu2: number, cu3: number, cu4: number) {
+    constructor(cu1: string, cu2: string, cu3: string, cu4: string) {
         super();
         let cellUnit1 = new CellUnit(cu1);
         this.addChild(cellUnit1);
@@ -244,19 +289,44 @@ class Cell extends egret.Sprite {
         this.addChild(cellUnit4);
     }
 
-    public static getByType(type: number): Cell {
-        if (!Cell.BLANK) {
-            Cell.BLANK = new Cell(0, 0, 0, 0);
-        }
-        if (!Cell.PLAT) {
-            Cell.PLAT = new Cell(0, 0, 1, 1);
-        }
+    public static getByType(type: string): Cell {
         switch (type) {
-            case 1:
-                return new Cell(0, 0, 1, 1);
+            case "hs":
+                return new Cell("n", "n", "hd", "hd");
+            case "hd":
+                return new Cell("n", "n", "hd", "hd");
+            case "hds":
+                return new Cell("hl", "hr", "hdl", "hdr");
+            case "hdl":
+                return new Cell("hl", "n", "hdl", "hd");
+            case "hdr":
+                return new Cell("n", "hr", "hd", "hdr");
+            case "hu":
+                return new Cell("hu", "hu", "n", "n");
+            case "hus":
+                return new Cell("hul", "hur", "hl", "hr");
+            case "hul":
+                return new Cell("hul", "hu", "hl", "n");
+            case "hur":
+                return new Cell("hu", "hur", "n", "hr");
+            case "hl":
+                return new Cell("hl", "n", "hl", "n");
+            case "hr":
+                return new Cell("n", "hr", "n", "hr");
+            case "hls":
+                return new Cell("hul", "hu", "hdl", "hd");
+            case "hrs":
+                return new Cell("hu", "hur", "hd", "hdr");
+            case "hud":
+                return new Cell("hu", "hu", "hd", "hd");
+            case "hlr":
+                return new Cell("hl", "hr", "hl", "hr");
             default:
-                return new Cell(0, 0, 0, 0);
+                return new Cell("n", "n", "n", "n");
         }
+    }
+    public static getByCorner(ul,ur,dl,dr): Cell {
+         return new Cell(ul==0?"hul1":"n", ur==0?"hur1":"n", dl==0?"hdl1":"n", dr==0?"hdr1":"n");
     }
 }
 

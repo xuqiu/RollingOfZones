@@ -2,7 +2,7 @@
 
 class Main extends MainFrame {
     public static enemyArray:egret.Sprite[] = [];
-    public static SCALE=1;
+    public static SCALE = 1;
 
     public constructor() {
         super();
@@ -29,8 +29,8 @@ class Main extends MainFrame {
 
         cellMap.renderTrunks(0,0);
         this.addChild(cellMap);
-        cellMap.x = 400;
-        cellMap.y = 300;
+        cellMap.x = 300;
+        cellMap.y = 200;
         cellMap.scaleX = Main.SCALE;
         cellMap.scaleY = Main.SCALE;
 
