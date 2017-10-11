@@ -37,59 +37,21 @@ class CellMap extends egret.Sprite {
     public addCell(x: number, y: number) {
         let cellDate = this.getCellDate(x, y);
         let cell: Cell;
-        if(cellDate == 0){
+        if (cellDate == 0) {
             cell = Cell.getByType("n");
-        }else if (cellDate == 1) {
-            let renderType;
-            let upData = this.getCellDate(x, y - 1);
-            let downData = this.getCellDate(x, y + 1);
-            let leftData = this.getCellDate(x - 1, y);
-            let rightData = this.getCellDate(x + 1, y);
+        } else if (cellDate == 1) {
+            let u = this.getCellDate(x, y - 1);
+            let d = this.getCellDate(x, y + 1);
+            let l = this.getCellDate(x - 1, y);
+            let r = this.getCellDate(x + 1, y);
+            let ul = this.getCellDate(x - 1, y - 1);
+            let ur = this.getCellDate(x + 1, y - 1);
+            let dl = this.getCellDate(x - 1, y + 1);
+            let dr = this.getCellDate(x + 1, y + 1);
 
-            let ulData = this.getCellDate(x-1, y - 1);
-            let urData = this.getCellDate(x+1, y - 1);
-            let dlData = this.getCellDate(x - 1, y+1);
-            let drData = this.getCellDate(x + 1, y+1);
+            cell = Cell.getBySur(u, d, l, r, ul, ur, dl, dr);
 
-
-            if (upData == 0 && downData == 0 && leftData == 0 && rightData == 0) {
-                renderType = "hs";
-            } else if (upData == 1 && downData == 0 && leftData == 0 && rightData == 0) {
-                renderType = "hds";
-            } else if (upData == 0 && downData == 1 && leftData == 0 && rightData == 0) {
-                renderType = "hus";
-            } else if (upData == 0 && downData == 0 && leftData == 1 && rightData == 0) {
-                renderType = "hrs";
-            } else if (upData == 0 && downData == 0 && leftData == 0 && rightData == 1) {
-                renderType = "hls";
-            } else if (upData == 1 && downData == 1 && leftData == 0 && rightData == 0) {
-                renderType = "hlr";
-            } else if (upData == 1 && downData == 0 && leftData == 1 && rightData == 0) {
-                renderType = "hdr";
-            } else if (upData == 1 && downData == 0 && leftData == 0 && rightData == 1) {
-                renderType = "hdl";
-            } else if (upData == 0 && downData == 1 && leftData == 1 && rightData == 0) {
-                renderType = "hur";
-            } else if (upData == 0 && downData == 1 && leftData == 0 && rightData == 1) {
-                renderType = "hul";
-            } else if (upData == 0 && downData == 0 && leftData == 1 && rightData == 1) {
-                renderType = "hud";
-            } else if (upData == 1 && downData == 1 && leftData == 1 && rightData == 0) {
-                renderType = "hr";
-            } else if (upData == 1 && downData == 1 && leftData == 0 && rightData == 1) {
-                renderType = "hl";
-            } else if (upData == 1 && downData == 0 && leftData == 1 && rightData == 1) {
-                renderType = "hd";
-            } else if (upData == 0 && downData == 1 && leftData == 1 && rightData == 1) {
-                renderType = "hu";
-            }
-            if(renderType){
-                cell = Cell.getByType(renderType);
-            }else{
-                cell = Cell.getByCorner(ulData,urData,dlData,drData);
-            }
         }
-
 
 
         cell.x = x * CellMap.CELL_SIZE;
@@ -292,7 +254,7 @@ class Cell extends egret.Sprite {
     public static getByType(type: string): Cell {
         switch (type) {
             case "hs":
-                return new Cell("n", "n", "hd", "hd");
+                return new Cell("hul", "hur", "hdl", "hdr");
             case "hd":
                 return new Cell("n", "n", "hd", "hd");
             case "hds":
@@ -325,8 +287,86 @@ class Cell extends egret.Sprite {
                 return new Cell("n", "n", "n", "n");
         }
     }
-    public static getByCorner(ul,ur,dl,dr): Cell {
-         return new Cell(ul==0?"hul1":"n", ur==0?"hur1":"n", dl==0?"hdl1":"n", dr==0?"hdr1":"n");
+
+    public static getByCorner(ul, ur, dl, dr): Cell {
+        return new Cell(ul == 0 ? "hul1" : "n", ur == 0 ? "hur1" : "n", dl == 0 ? "hdl1" : "n", dr == 0 ? "hdr1" : "n");
+    }
+
+    public static getBySur(u: number, d: number, l: number, r: number, ul: number, ur: number, dl: number, dr: number) {
+        let cul;
+        let cur;
+        let cdl;
+        let cdr;
+        if (l == 0 && ul == 0 && u == 0) {
+            cul = "hul";
+        }else if (l == 0 && ul == 0 && u == 1) {
+            cul = "hl";
+        }else if (l == 0 && ul == 1 && u == 0) {
+            cul = "hul";
+        }else if (l == 0 && ul == 1 && u == 1) {
+            cul = "hl";
+        }else if (l == 1 && ul == 0 && u == 0) {
+            cul = "hu";
+        }else if (l == 1 && ul == 0 && u == 1) {
+            cul = "hul1";
+        }else if (l == 1 && ul == 1 && u == 0) {
+            cul = "hu";
+        }else if (l == 1 && ul == 1 && u == 1) {
+            cul = "n";
+        }
+        if (r == 0 && ur == 0 && u == 0) {
+            cur = "hur";
+        }else if (r == 0 && ur == 0 && u == 1) {
+            cur = "hr";
+        }else if (r == 0 && ur == 1 && u == 0) {
+            cur = "hur";
+        }else if (r == 0 && ur == 1 && u == 1) {
+            cur = "hr";
+        }else if (r == 1 && ur == 0 && u == 0) {
+            cur = "hu";
+        }else if (r == 1 && ur == 0 && u == 1) {
+            cur = "hur1";
+        }else if (r == 1 && ur == 1 && u == 0) {
+            cur = "hu";
+        }else if (r == 1 && ur == 1 && u == 1) {
+            cur = "n";
+        }
+
+        if (l == 0 && dl == 0 && d == 0) {
+            cdl = "hdl";
+        }else if (l == 0 && dl == 0 && d == 1) {
+            cdl = "hl";
+        }else if (l == 0 && dl == 1 && d == 0) {
+            cdl = "hdl";
+        }else if (l == 0 && dl == 1 && d == 1) {
+            cdl = "hl";
+        }else if (l == 1 && dl == 0 && d == 0) {
+            cdl = "hd";
+        }else if (l == 1 && dl == 0 && d == 1) {
+            cdl = "hdl1";
+        }else if (l == 1 && dl == 1 && d == 0) {
+            cdl = "hd";
+        }else if (l == 1 && dl == 1 && d == 1) {
+            cdl = "n";
+        }
+        if (r == 0 && dr == 0 && d == 0) {
+            cdr = "hdr";
+        }else if (r == 0 && dr == 0 && d == 1) {
+            cdr = "hr";
+        }else if (r == 0 && dr == 1 && d == 0) {
+            cdr = "hdr";
+        }else if (r == 0 && dr == 1 && d == 1) {
+            cdr = "hr";
+        }else if (r == 1 && dr == 0 && d == 0) {
+            cdr = "hd";
+        }else if (r == 1 && dr == 0 && d == 1) {
+            cdr = "hdr1";
+        }else if (r == 1 && dr == 1 && d == 0) {
+            cdr = "hd";
+        }else if (r == 1 && dr == 1 && d == 1) {
+            cdr = "n";
+        }
+        return new Cell(cul, cur, cdl, cdr);
     }
 }
 
