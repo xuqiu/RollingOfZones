@@ -16,12 +16,13 @@ class Knight extends egret.Sprite {
     private init():void {
         // this.scaleX = 2;
         // this.scaleY = 2;
-        //读取一个骨骼数据,并创建实例显示到舞台
-        var skeletonData = RES.getRes("knight_ske_json");
-        var textureData = RES.getRes("knight_tex_json");
-        var texture = RES.getRes(this.skin);
 
-        var factory = new dragonBones.EgretFactory();
+        //读取一个骨骼数据,并创建实例显示到舞台
+        const skeletonData = RES.getRes("knight_ske_json");
+        const textureData = RES.getRes("knight_tex_json");
+        const texture = RES.getRes(this.skin);
+
+        const factory = new dragonBones.EgretFactory();
         factory.addDragonBonesData(factory.parseDragonBonesData(skeletonData));
         factory.addTextureAtlasData(new dragonBones.EgretTextureAtlas(texture, textureData));
 
@@ -36,8 +37,10 @@ class Knight extends egret.Sprite {
 
         this.currentMovement = this.knightWalkDown;
 
-        var armatureDisplay = this.currentMovement.getDisplay();
+        let armatureDisplay = this.currentMovement.getDisplay();
         this.addChild(armatureDisplay);
+        //锚点移到脚上
+        this.anchorOffsetY = 10;
     }
 
     //region 移动相关
@@ -114,7 +117,7 @@ class Knight extends egret.Sprite {
 
         this.removeChildren();
         this.currentMovement.animation.play();
-        var armatureDisplay = this.currentMovement.getDisplay();
+        const armatureDisplay = this.currentMovement.getDisplay();
         this.addChild(armatureDisplay);
 
         if (movePosition) {
@@ -126,10 +129,42 @@ class Knight extends egret.Sprite {
     }
 
     private static FOOT_SIZE:number = 6;
+    public collideSize:number = 10;
+
     //移动位置
     private moveYX():void {
-        this.x += this._moveX * Knight.FOOT_SIZE;
-        this.y += this._moveY * Knight.FOOT_SIZE;
+        //目标位置
+        let tx = this.x + this._moveX * Knight.FOOT_SIZE;
+        let ty = this.y + this._moveY * Knight.FOOT_SIZE;
+        //碰撞位置,用于碰撞检测
+        //todo 现在是直线碰撞,后面改成方形碰撞,既判断移动方向的两个点
+        let txf = this.x + (this._moveX == 0 ? 0 : this._moveX > 0 ? 1 : -1) * this.collideSize;
+        let tyf = this.y + (this._moveY == 0 ? 0 : this._moveY > 0 ? 1 : -1) * this.collideSize;
+        //地形碰撞检测
+        let cellMap:CellMap = <CellMap>(this.parent);
+        //当前和目标位置地形不同
+        let cXY = cellMap.getCellXY(this.x,this.y);
+        let tXY = cellMap.getCellXY(txf,tyf);
+        if(cellMap.getCellDate(cXY.x,cXY.y)!=cellMap.getCellDate(tXY.x,tXY.y)){
+            return;
+        }
+
+        //todo 物件碰撞检测
+
+        //判断是否走出trunk,走出的话触发生成地图
+        let ctXY = cellMap.getTrunkXY(this.x,this.y);
+        let ttXY = cellMap.getTrunkXY(tx,ty);
+        if(!ctXY.equals(ttXY)){
+            cellMap.renderTrunks(ttXY.x, ttXY.y);
+        }
+
+        //移动
+        this.x = tx;
+        this.y = ty;
+        //同时移动 地图
+        cellMap.x -= this._moveX * Knight.FOOT_SIZE * Main.SCALE;
+        cellMap.y -= this._moveY * Knight.FOOT_SIZE * Main.SCALE;
+
     }
 
     //endregion
@@ -137,7 +172,7 @@ class Knight extends egret.Sprite {
     public fire(x:number, y:number) {
         //TODO 获取武器
         //TODO 能量检测,频率检测
-        var bullet:Bullet = Bullet.getBullet("energy_png", "energy_json", x, y);
+        let bullet:Bullet = Bullet.getBullet("energy_png", "energy_json", x, y);
         bullet.x = this.x;
         bullet.y = this.y;
         this.parent.addChild(bullet);

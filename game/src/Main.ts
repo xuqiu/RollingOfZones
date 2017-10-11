@@ -14,50 +14,15 @@ class Main extends MainFrame {
      * Create a game scene
      */
     public createGameScene(): void {
-        //this.drawMap();
+        this.drawMap();
         //添加显示文本
-        // this.drawText();
-        //this.drawKnight();
+        this.drawText();
+        this.drawKnight();
         this.drawEnemy();
         //
-        // egret.startTick(this.onTicker, this);
+        egret.startTick(this.onTicker, this);
         //
-        // this.stage.addEventListener(egret.TouchEvent.TOUCH_BEGIN,this.onTouch,this);
-
-
-        let cellMap: CellMap = new CellMap("1234");
-
-        cellMap.renderTrunks(0,0);
-        this.addChild(cellMap);
-        cellMap.x = 300;
-        cellMap.y = 200;
-        cellMap.scaleX = Main.SCALE;
-        cellMap.scaleY = Main.SCALE;
-
-        const lineShape: egret.Shape = new egret.Shape();
-        lineShape.graphics.lineStyle(3, 0xccaadd);
-        for(let i = -10; i < 10; i++)
-        {
-            lineShape.graphics.moveTo(0, 320*i);
-            lineShape.graphics.lineTo(1000, 320*i);
-            lineShape.graphics.moveTo(0, 320*i);
-            lineShape.graphics.lineTo(-1000, 320*i);
-            lineShape.graphics.moveTo(320*i, 0);
-            lineShape.graphics.lineTo(320*i, 1000);
-            lineShape.graphics.moveTo(320*i, 0);
-            lineShape.graphics.lineTo(320*i, -1000);
-        }
-        lineShape.graphics.moveTo(0, 0);
-        cellMap.addChild(lineShape);
-
-        const myShape: egret.Shape = new egret.Shape();
-
-        myShape.graphics.beginFill(0xff0000, 1);
-        myShape.graphics.drawRect(100,100,5,5);
-        myShape.graphics.endFill();
-
-
-        this.addChild(myShape);
+        this.stage.addEventListener(egret.TouchEvent.TOUCH_BEGIN,this.onTouch,this);
 
     }
 
@@ -65,8 +30,35 @@ class Main extends MainFrame {
     private onTouch(evt:egret.TouchEvent):void{
         this.knight.fire(evt.stageX, evt.stageY);
     }
+    private cellMap: CellMap;
+    private drawMap():void
+    {
+        this.cellMap = new CellMap("1234");
 
+        this.cellMap.renderTrunks(0,0);
+        this.addChild(this.cellMap);
+        this.cellMap.x = 300;
+        this.cellMap.y = 200;
+        this.cellMap.scaleX = Main.SCALE;
+        this.cellMap.scaleY = Main.SCALE;
 
+        // const lineShape: egret.Shape = new egret.Shape();
+        // lineShape.graphics.lineStyle(3, 0xccaadd);
+        // for(let i = -10; i < 10; i++)
+        // {
+        //     lineShape.graphics.moveTo(0, 320*i);
+        //     lineShape.graphics.lineTo(1000, 320*i);
+        //     lineShape.graphics.moveTo(0, 320*i);
+        //     lineShape.graphics.lineTo(-1000, 320*i);
+        //     lineShape.graphics.moveTo(320*i, 0);
+        //     lineShape.graphics.lineTo(320*i, 1000);
+        //     lineShape.graphics.moveTo(320*i, 0);
+        //     lineShape.graphics.lineTo(320*i, -1000);
+        // }
+        // lineShape.graphics.moveTo(0, 0);
+        //cellMap.addChild(lineShape);
+
+    }
 
 
     /**骨骼角色执行的当前动作索引**/
@@ -81,7 +73,7 @@ class Main extends MainFrame {
         this.knight = new Knight("boss3a_png");
         this.knight.x = 30;
         this.knight.y = 30;
-        this.addChildAt(this.knight,999);
+        this.cellMap.addChildAt(this.knight,999);
 
 
 
@@ -148,7 +140,7 @@ class Main extends MainFrame {
         this.knight.move(direction, true);
     }
     private mapContainer:MapContainer = new MapContainer();
-    private drawMap():void{
+    private drawTileMap():void{
 
         this.addChild( this.mapContainer );
         this.mapContainer.init("resource/maps/FirstZone.tmx");

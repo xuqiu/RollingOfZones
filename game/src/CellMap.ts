@@ -15,11 +15,19 @@ class CellMap extends egret.Sprite {
     }
 
     private onTouch(evt: egret.TouchEvent): void {
-        let cx = Math.floor(evt.localX / CellMap.CELL_SIZE);
-        let cy = Math.floor(evt.localY / CellMap.CELL_SIZE);
-        let tx = Math.floor(cx / CellMap.TRUNK_SIZE);
-        let ty = Math.floor(cy / CellMap.TRUNK_SIZE);
-        this.renderTrunks(tx, ty);
+        // let trunkPoint = this.getTrunkXY(evt.localX, evt.localY);
+        // this.renderTrunks(trunkPoint.x, trunkPoint.y);
+    }
+    public getCellXY(x:number,y:number): egret.Point {
+        let cx = Math.floor(x / CellMap.CELL_SIZE);
+        let cy = Math.floor(y / CellMap.CELL_SIZE);
+        return egret.Point.create(cx, cy);
+    }
+    public getTrunkXY(x:number,y:number): egret.Point {
+        let cellPoint = this.getCellXY(x,y);
+        let tx = Math.floor(cellPoint.x / CellMap.TRUNK_SIZE);
+        let ty = Math.floor(cellPoint.y / CellMap.TRUNK_SIZE);
+        return egret.Point.create(tx, ty);
     }
 
     private static rate: number = 20;
@@ -57,10 +65,10 @@ class CellMap extends egret.Sprite {
         cell.x = x * CellMap.CELL_SIZE;
         cell.y = y * CellMap.CELL_SIZE;
         this.cellCache[x + "," + y] = cell;
-        this.addChild(cell);
+        this.addChildAt(cell,0);
     }
 
-    public getCellDate(x: number, y: number): number {
+    public getCellDate(x: number, y: number) {
         let tx = Math.floor(x / CellMap.TRUNK_SIZE);
         let ty = Math.floor(y / CellMap.TRUNK_SIZE);
         let cx = x % CellMap.TRUNK_SIZE;
@@ -102,10 +110,6 @@ class CellMap extends egret.Sprite {
                 this.renderTrunk(sx, sy);
             }
         }
-
-        //移动地图到中心,后期会改为以人物为中心
-        this.x = 300 - tx * CellMap.CELL_SIZE * CellMap.TRUNK_SIZE * Main.SCALE;
-        this.y = 200 - ty * CellMap.CELL_SIZE * CellMap.TRUNK_SIZE * Main.SCALE;
         //回收外圈资源
         for (let sy = ty - CellMap.RENDER_RANGE - 1; sy <= ty + CellMap.RENDER_RANGE + 1; sy++) {
             for (let sx = tx - CellMap.RENDER_RANGE - 1; sx <= tx + CellMap.RENDER_RANGE + 1; sx++) {
