@@ -11,10 +11,13 @@ class CellMap extends egret.Sprite {
         super();
         this.seed = seed;
         this.touchEnabled = true;
-        //this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onTouch, this);
-        this.addEventListener(egret.TouchEvent.TOUCH_BEGIN,this.touchMove,this);
-        this.addEventListener(egret.TouchEvent.TOUCH_MOVE,this.touchMove,this);
-        this.addEventListener(egret.TouchEvent.TOUCH_END,this.onTouchEnd,this);
+        //射击动作
+        this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onTouch, this);
+        //region 点击移动
+        // this.addEventListener(egret.TouchEvent.TOUCH_BEGIN,this.touchMove,this);
+        // this.addEventListener(egret.TouchEvent.TOUCH_MOVE,this.touchMove,this);
+        // this.addEventListener(egret.TouchEvent.TOUCH_END,this.onTouchEnd,this);
+        //endregion
     }
     private touchMove(evt: egret.TouchEvent): void {
         this.getMain().movePoint(egret.Point.create(evt.localX, evt.localY));

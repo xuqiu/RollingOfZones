@@ -12,7 +12,7 @@ class Knight extends egret.Sprite {
         this.init();
     }
 
-    //初始化
+    //region 初始化
     private init():void {
         // this.scaleX = 2;
         // this.scaleY = 2;
@@ -42,6 +42,7 @@ class Knight extends egret.Sprite {
         //锚点移到脚上
         this.anchorOffsetY = 10;
     }
+    //endregion
 
     //region 移动相关
 
@@ -172,7 +173,7 @@ class Knight extends egret.Sprite {
 
     }
 
-    protected footSize:number = 6;
+    public footSize:number = 6;
     protected collideSize:number = 10;
 
     //移动位置
@@ -213,11 +214,17 @@ class Knight extends egret.Sprite {
 
         return true;
     }
-    protected getParentMap():CellMap{
-        return <CellMap>(this.parent);
-    }
+
 
     //endregion
+
+    //region 基本行为
+    //死亡
+    public dead(){
+        this._moveTimer.stop();
+    }
+    // endregion
+
     //region 战斗相关
     public fire(x:number, y:number) {
         //TODO 获取武器
@@ -229,9 +236,15 @@ class Knight extends egret.Sprite {
         bullet.fire();
     }
 
+    //endregion
 
-
-    
-
+    //region 基本方法 工具方法
+    //获取地图
+    protected getParentMap():CellMap{
+        return <CellMap>(this.parent);
+    }
+    public getPoint(){
+        return egret.Point.create(this.x, this.y);
+    }
     //endregion
 }

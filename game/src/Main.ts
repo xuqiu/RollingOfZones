@@ -26,15 +26,11 @@ class Main extends MainFrame {
 
     }
 
-
-    public onTouch(evt:egret.TouchEvent):void{
-        this.hero.fire(evt.stageX, evt.stageY);
-    }
     public touchMap(x,y):void{
-        this.hero.fire(x,y);
+        Main.HERO.fire(x,y);
     }
     public movePoint(p:egret.Point):void{
-        this.hero.movePoint(p);
+        Main.HERO.movePoint(p);
     }
     private cellMap: CellMap;
     private drawMap():void
@@ -69,17 +65,17 @@ class Main extends MainFrame {
 
     /**骨骼角色执行的当前动作索引**/
     /**存放骨骼动画的容器**/
-    private hero;
+    public static HERO:Hero;
     
     public enemy;
 
     /**创建骨骼模型**/
     private drawHero():void
     {
-        this.hero = new Hero("boss3a_png");
-        this.hero.x = 30;
-        this.hero.y = 30;
-        this.cellMap.addChildAt(this.hero,999);
+        Main.HERO = new Hero("boss3a_png");
+        Main.HERO.x = 30;
+        Main.HERO.y = 30;
+        this.cellMap.addChildAt(Main.HERO,999);
 
 
 
@@ -90,6 +86,8 @@ class Main extends MainFrame {
         this.enemy = new Enemy("boss4a_png");
         this.enemy.x = 200;
         this.enemy.y = 30;
+        this.enemy.setAI(StraightAI.instance);
+        this.enemy.footSize = 3;
         this.cellMap.addChildAt(this.enemy,999);
         Main.enemyArray.push(this.enemy);
     }
@@ -142,14 +140,7 @@ class Main extends MainFrame {
         return false;
     }
     public move(direction:Direction){
-        //TODO 判断是地图移动还是人物移动
-        this.hero.move(direction, true);
-    }
-    private mapContainer:MapContainer = new MapContainer();
-    private drawTileMap():void{
-
-        this.addChild( this.mapContainer );
-        this.mapContainer.init("resource/maps/FirstZone.tmx");
+        Main.HERO.move(direction, true);
     }
 
     /// 提示信息
