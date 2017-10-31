@@ -54,9 +54,53 @@ class Knight extends egret.Sprite {
 
     //移动相关变量
     private _lastDirection:Direction;
+    private _lastPointDirect:Direction;
     private _moveTimer:egret.Timer = new egret.Timer(20);
-    private _moveX:number;
-    private _moveY:number;
+    protected _moveX:number;
+    protected _moveY:number;
+    public movePoint(point:egret.Point) {
+        //没用要移动的点表示停止移动
+        if (!point) {
+            //为了stop在第0帧,加这么一句 直接stopByFrame的话会有bug(触发后续的keyDown时动作停止)
+            this.currentMovement.animation.gotoAndPlayByFrame(this.currentMovement.name, 0);
+            this.currentMovement.animation.stop(this.currentMovement.name);
+            this._moveTimer.stop();
+            this._lastPointDirect = null;
+            return;
+        }
+        let rx = point.x - this.x;
+        let ry = point.y - this.y;
+        let pDis = CellMap.dis(point.x, point.y, this.x, this.y);
+        this._moveX = rx / pDis;
+        this._moveY = ry / pDis;
+
+        //行走动画
+        let moveDirection: Direction;
+        if (ry > 0 && ry > Math.abs(rx)) {
+            this.currentMovement = this.knightWalkDown;
+            moveDirection = Direction.down;
+        } else if (ry < 0 && Math.abs(ry) > Math.abs(rx)) {
+            this.currentMovement = this.knightWalkUp;
+            moveDirection = Direction.up;
+        } else if (rx < 0) {
+            this.currentMovement = this.knightWalkLeft;
+            moveDirection = Direction.left;
+        } else if (rx > 0) {
+            this.currentMovement = this.knightWalkRight;
+            moveDirection = Direction.right;
+        }
+        if (moveDirection != this._lastPointDirect) {
+            this._lastPointDirect = moveDirection;
+            this.removeChildren();
+            this.currentMovement.animation.play();
+            const armatureDisplay = this.currentMovement.getDisplay();
+            this.addChild(armatureDisplay);
+        }
+
+        //移动位置
+        this._moveTimer.addEventListener(egret.TimerEvent.TIMER, this.moveYX, this);
+        this._moveTimer.start();
+    }
     //移动动画及位置控制
     public move(direction:Direction, movePosition:boolean) {
 
@@ -128,25 +172,30 @@ class Knight extends egret.Sprite {
 
     }
 
-    private static FOOT_SIZE:number = 6;
-    public collideSize:number = 10;
+    protected footSize:number = 6;
+    protected collideSize:number = 10;
 
     //移动位置
-    private moveYX():void {
+    public moveYX():boolean {
         //目标位置
-        let tx = this.x + this._moveX * Knight.FOOT_SIZE;
-        let ty = this.y + this._moveY * Knight.FOOT_SIZE;
+        let tx = this.x + this._moveX * this.footSize;
+        let ty = this.y + this._moveY * this.footSize;
         //碰撞位置,用于碰撞检测
         //todo 现在是直线碰撞,后面改成方形碰撞,既判断移动方向的两个点
         let txf = this.x + (this._moveX == 0 ? 0 : this._moveX > 0 ? 1 : -1) * this.collideSize;
         let tyf = this.y + (this._moveY == 0 ? 0 : this._moveY > 0 ? 1 : -1) * this.collideSize;
         //地形碰撞检测
-        let cellMap:CellMap = <CellMap>(this.parent);
+        let cellMap:CellMap = this.getParentMap();
         //当前和目标位置地形不同
         let cXY = cellMap.getCellXY(this.x,this.y);
         let tXY = cellMap.getCellXY(txf,tyf);
         if(cellMap.getCellDate(cXY.x,cXY.y)!=cellMap.getCellDate(tXY.x,tXY.y)){
-            return;
+            return false;
+        }
+        //还要判断下落脚点,防止因地形原因卡上高地
+        tXY = cellMap.getCellXY(tx,ty);
+        if(cellMap.getCellDate(cXY.x,cXY.y)!=cellMap.getCellDate(tXY.x,tXY.y)){
+            return false;
         }
 
         //todo 物件碰撞检测
@@ -161,10 +210,11 @@ class Knight extends egret.Sprite {
         //移动
         this.x = tx;
         this.y = ty;
-        //同时移动 地图
-        cellMap.x -= this._moveX * Knight.FOOT_SIZE * Main.SCALE;
-        cellMap.y -= this._moveY * Knight.FOOT_SIZE * Main.SCALE;
 
+        return true;
+    }
+    protected getParentMap():CellMap{
+        return <CellMap>(this.parent);
     }
 
     //endregion

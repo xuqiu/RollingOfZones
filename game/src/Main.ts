@@ -17,18 +17,24 @@ class Main extends MainFrame {
         this.drawMap();
         //添加显示文本
         this.drawText();
-        this.drawKnight();
+        this.drawHero();
         this.drawEnemy();
         //
         egret.startTick(this.onTicker, this);
         //
-        this.stage.addEventListener(egret.TouchEvent.TOUCH_BEGIN,this.onTouch,this);
+
 
     }
 
 
-    private onTouch(evt:egret.TouchEvent):void{
-        this.knight.fire(evt.stageX, evt.stageY);
+    public onTouch(evt:egret.TouchEvent):void{
+        this.hero.fire(evt.stageX, evt.stageY);
+    }
+    public touchMap(x,y):void{
+        this.hero.fire(x,y);
+    }
+    public movePoint(p:egret.Point):void{
+        this.hero.movePoint(p);
     }
     private cellMap: CellMap;
     private drawMap():void
@@ -63,17 +69,17 @@ class Main extends MainFrame {
 
     /**骨骼角色执行的当前动作索引**/
     /**存放骨骼动画的容器**/
-    private knight;
+    private hero;
     
     public enemy;
 
     /**创建骨骼模型**/
-    private drawKnight():void
+    private drawHero():void
     {
-        this.knight = new Knight("boss3a_png");
-        this.knight.x = 30;
-        this.knight.y = 30;
-        this.cellMap.addChildAt(this.knight,999);
+        this.hero = new Hero("boss3a_png");
+        this.hero.x = 30;
+        this.hero.y = 30;
+        this.cellMap.addChildAt(this.hero,999);
 
 
 
@@ -81,10 +87,10 @@ class Main extends MainFrame {
     /**创建骨骼模型**/
     private drawEnemy():void
     {
-        this.enemy = new Knight("boss4a_png");
+        this.enemy = new Enemy("boss4a_png");
         this.enemy.x = 200;
         this.enemy.y = 30;
-        this.addChildAt(this.enemy,999);
+        this.cellMap.addChildAt(this.enemy,999);
         Main.enemyArray.push(this.enemy);
     }
     private _time:number;
@@ -96,7 +102,7 @@ class Main extends MainFrame {
         }
 
         let now = timeStamp;
-        let pass = now - this._time;
+        let pass = now - this._time;0
         this._time = now;
 
 
@@ -137,7 +143,7 @@ class Main extends MainFrame {
     }
     public move(direction:Direction){
         //TODO 判断是地图移动还是人物移动
-        this.knight.move(direction, true);
+        this.hero.move(direction, true);
     }
     private mapContainer:MapContainer = new MapContainer();
     private drawTileMap():void{

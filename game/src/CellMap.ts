@@ -11,10 +11,23 @@ class CellMap extends egret.Sprite {
         super();
         this.seed = seed;
         this.touchEnabled = true;
-        this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onTouch, this);
+        //this.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onTouch, this);
+        this.addEventListener(egret.TouchEvent.TOUCH_BEGIN,this.touchMove,this);
+        this.addEventListener(egret.TouchEvent.TOUCH_MOVE,this.touchMove,this);
+        this.addEventListener(egret.TouchEvent.TOUCH_END,this.onTouchEnd,this);
     }
-
+    private touchMove(evt: egret.TouchEvent): void {
+        this.getMain().movePoint(egret.Point.create(evt.localX, evt.localY));
+        // let trunkPoint = this.getTrunkXY(evt.localX, evt.localY);
+        // this.renderTrunks(trunkPoint.x, trunkPoint.y);
+    }
+    private onTouchEnd(evt: egret.TouchEvent): void {
+        this.getMain().movePoint(null);
+        // let trunkPoint = this.getTrunkXY(evt.localX, evt.localY);
+        // this.renderTrunks(trunkPoint.x, trunkPoint.y);
+    }
     private onTouch(evt: egret.TouchEvent): void {
+        this.getMain().touchMap(evt.localX, evt.localY);
         // let trunkPoint = this.getTrunkXY(evt.localX, evt.localY);
         // this.renderTrunks(trunkPoint.x, trunkPoint.y);
     }
@@ -225,6 +238,10 @@ class CellMap extends egret.Sprite {
             }
         }
     }
+    private getMain():Main{
+        return <Main>(this.parent);
+    }
+
 }
 
 class CellUnit extends egret.Bitmap {
