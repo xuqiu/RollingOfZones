@@ -86,7 +86,7 @@ class Main extends MainFrame {
         this.enemy = new Enemy("boss4a_png");
         this.enemy.x = 200;
         this.enemy.y = 30;
-        this.enemy.setAI(StraightAI.instance);
+        this.enemy.setAI(AI.get("straight"));
         this.enemy.footSize = 3;
         this.cellMap.addChildAt(this.enemy,999);
         Main.enemyArray.push(this.enemy);
