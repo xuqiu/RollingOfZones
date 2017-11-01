@@ -1,4 +1,4 @@
-class Hero extends Knight {
+class Hero extends KnightShow {
     public moveYX():boolean {
         let moved = super.moveYX();
         //同时移动 地图

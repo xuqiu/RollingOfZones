@@ -12,7 +12,7 @@ var game_file_list = [
 	"libs/modules/particle/particle.js",
 	"polyfill/promise.js",
 	"bin-debug/Char/AI/AI.js",
-	"bin-debug/Char/Knight.js",
+	"bin-debug/Char/KnightShow.js",
 	"bin-debug/frame/MainFrame.js",
 	"bin-debug/Constant/Direction.js",
 	"bin-debug/Char/Enemy.js",
