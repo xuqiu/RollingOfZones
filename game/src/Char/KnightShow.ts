@@ -1,5 +1,5 @@
 /**
- * 骑士,主人公 或者 NPC
+ * 骑士,主人公 或者 NPC 表现层
  */
 class KnightShow extends egret.Sprite {
 
@@ -177,27 +177,15 @@ class KnightShow extends egret.Sprite {
     protected collideSize:number = 10;
 
     //移动位置
-    public moveYX():boolean {
+    public moveYX():boolean[] {
         //目标位置
         let tx = this.x + this._moveX * this.footSize;
         let ty = this.y + this._moveY * this.footSize;
-        //碰撞位置,用于碰撞检测
-        //todo 现在是直线碰撞,后面改成方形碰撞,既判断移动方向的两个点
-        let txf = this.x + (this._moveX == 0 ? 0 : this._moveX > 0 ? 1 : -1) * this.collideSize;
-        let tyf = this.y + (this._moveY == 0 ? 0 : this._moveY > 0 ? 1 : -1) * this.collideSize;
         //地形碰撞检测
         let cellMap:CellMap = this.getParentMap();
-        //当前和目标位置地形不同
-        let cXY = cellMap.getCellXY(this.x,this.y);
-        let tXY = cellMap.getCellXY(txf,tyf);
-        if(cellMap.getCellDate(cXY.x,cXY.y)!=cellMap.getCellDate(tXY.x,tXY.y)){
-            return false;
-        }
-        //还要判断下落脚点,防止因地形原因卡上高地
-        tXY = cellMap.getCellXY(tx,ty);
-        if(cellMap.getCellDate(cXY.x,cXY.y)!=cellMap.getCellDate(tXY.x,tXY.y)){
-            return false;
-        }
+        //x和y两个方向分别检查碰撞
+        let checkX = cellMap.isSame(this.x,this.y,tx,this.y);
+        let checkY = cellMap.isSame(this.x,this.y,this.x,ty);
 
         //todo 物件碰撞检测
 
@@ -209,11 +197,16 @@ class KnightShow extends egret.Sprite {
         }
 
         //移动
-        this.x = tx;
-        this.y = ty;
-
-        return true;
+        if(checkX){
+            this.x = tx;
+        }
+        if(checkY) {
+            this.y = ty;
+        }
+        return [checkX,checkY];
     }
+
+
 
 
     //endregion

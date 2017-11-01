@@ -1,4 +1,4 @@
-class Enemy extends KnightShow {
+class Enemy extends Knight {
     private _aiTimer:egret.Timer = new egret.Timer(100);
     private _AI:AI;
     constructor(skin:string) {

@@ -100,6 +100,16 @@ class CellMap extends egret.Sprite {
         return cachedTrunk.data[cy][cx];
     }
 
+    /**
+     * 判断两个点,是否是相同地形,用于碰撞检测
+     */
+    public isSame(x1,y1,x2,y2):boolean{
+        let c1 = this.getCellXY(x1,y1);
+        let c2 = this.getCellXY(x2,y2);
+        return this.getCellDate(c1.x, c1.y) == this.getCellDate(c2.x, c2.y);
+
+    }
+
     public removeCell(x: number, y: number) {
         this.removeChild(this.cellCache[x + "," + y]);
     }
