@@ -90,12 +90,13 @@ class Bullet extends particle.GravityParticleSystem {
      */
     private fireRadio:number = 20;//伤害范围
     private checkHit():boolean {
-        var enemy:egret.Sprite = Main.enemyArray[0];
-        var dX = this.emitterX + this.x - enemy.x;
-        var dY = this.emitterY + this.y - enemy.y;
-        var d = Math.sqrt(dX * dX + dY * dY);
+        let enemy:Enemy = Main.enemyArray[0];
+        let dX = this.emitterX + this.x - enemy.x;
+        let dY = this.emitterY + this.y - enemy.y;
+        let d = Math.sqrt(dX * dX + dY * dY);
         if(d<this.fireRadio){
             egret.log("hit");
+            enemy.gotHit();
             return true;
         }
         return false;

@@ -1,6 +1,8 @@
 /**
  * 骑士,主人公 或者 NPC 表现层
  */
+import EgretArmatureDisplay = dragonBones.EgretArmatureDisplay;
+
 class KnightShow extends egret.Sprite {
 
     private skin:string;
@@ -60,8 +62,18 @@ class KnightShow extends egret.Sprite {
     protected _moveX:number;
     protected _moveY:number;
     public movePoint(point:egret.Point) {
+        let rx,ry,pDis;
+        let stop = false;
         //没用要移动的点表示停止移动
         if (!point) {
+            stop = true;
+        } else {
+            rx = point.x - this.x;
+            ry = point.y - this.y;
+            pDis = CellMap.dis(point.x, point.y, this.x, this.y);
+        }
+
+        if(stop || pDis == 0){
             //为了stop在第0帧,加这么一句 直接stopByFrame的话会有bug(触发后续的keyDown时动作停止)
             this.currentMovement.animation.gotoAndPlayByFrame(this.currentMovement.name, 0);
             this.currentMovement.animation.stop(this.currentMovement.name);
@@ -69,9 +81,6 @@ class KnightShow extends egret.Sprite {
             this._lastPointDirect = null;
             return;
         }
-        let rx = point.x - this.x;
-        let ry = point.y - this.y;
-        let pDis = CellMap.dis(point.x, point.y, this.x, this.y);
         this._moveX = rx / pDis;
         this._moveY = ry / pDis;
 
@@ -92,15 +101,30 @@ class KnightShow extends egret.Sprite {
         }
         if (moveDirection != this._lastPointDirect) {
             this._lastPointDirect = moveDirection;
-            this.removeChildren();
-            this.currentMovement.animation.play();
-            const armatureDisplay = this.currentMovement.getDisplay();
-            this.addChild(armatureDisplay);
+            this.resetArmature();
+
         }
 
         //移动位置
-        this._moveTimer.addEventListener(egret.TimerEvent.TIMER, this.moveYX, this);
-        this._moveTimer.start();
+        if (pDis <= this.footSize) {//
+            this.x = point.x;
+            this.y = point.y;
+        } else {
+            this._moveTimer.addEventListener(egret.TimerEvent.TIMER, this.moveYX, this);
+            this._moveTimer.start();
+        }
+    }
+    private resetArmature(){
+        let father = this;
+        this.$children.forEach(function(value, index, array){
+            if(value instanceof dragonBones.EgretArmatureDisplay){
+                father.removeChild(value);
+            }
+        });
+
+        this.currentMovement.animation.play();
+        const armatureDisplay = this.currentMovement.getDisplay();
+        this.addChild(armatureDisplay);
     }
     //移动动画及位置控制
     public move(direction:Direction, movePosition:boolean) {
@@ -160,10 +184,7 @@ class KnightShow extends egret.Sprite {
                 break;
         }
 
-        this.removeChildren();
-        this.currentMovement.animation.play();
-        const armatureDisplay = this.currentMovement.getDisplay();
-        this.addChild(armatureDisplay);
+        this.resetArmature();
 
         if (movePosition) {
 
@@ -215,6 +236,12 @@ class KnightShow extends egret.Sprite {
     //死亡
     public dead(){
         this._moveTimer.stop();
+        this.movePoint(null);
+
+    }
+    //被击中
+    public gotHit(){
+
     }
     // endregion
 

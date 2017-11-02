@@ -95,9 +95,12 @@ class CellMap extends egret.Sprite {
         if (cy < 0) {
             cy = CellMap.TRUNK_SIZE + cy;
         }
-
+        try{
         let cachedTrunk = this.trunkCache[tx + "," + ty];
         return cachedTrunk.data[cy][cx];
+        }catch(e){
+            egret.log(e);
+        }
     }
 
     /**

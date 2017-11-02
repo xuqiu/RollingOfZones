@@ -1,7 +1,7 @@
 
 
 class Main extends MainFrame {
-    public static enemyArray:egret.Sprite[] = [];
+    public static enemyArray:Enemy[] = [];
     public static SCALE = 1;
 
     public constructor() {
@@ -88,6 +88,7 @@ class Main extends MainFrame {
         this.enemy.y = 30;
         this.enemy.setAI(AI.get("straight"));
         this.enemy.footSize = 3;
+        this.enemy.setData({"name":"boss","hp":77,"hpMAX":100,"ap":20});
         this.cellMap.addChildAt(this.enemy,999);
         Main.enemyArray.push(this.enemy);
     }
