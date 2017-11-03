@@ -237,7 +237,10 @@ class KnightShow extends egret.Sprite {
     public dead(){
         this._moveTimer.stop();
         this.movePoint(null);
-
+        let self = this;
+        egret.Tween.get( this ).to( {scaleY:5}, 5000 ).call(new function(){
+            self.parent.removeChild(self);
+        });
     }
     //被击中
     public gotHit(){

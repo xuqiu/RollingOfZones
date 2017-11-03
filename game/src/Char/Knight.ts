@@ -3,6 +3,7 @@ class Knight extends KnightShow {
     protected _hp:number;
     protected _hpMAX:number;
     protected _ap:number;
+    protected _dead:boolean;
     private healthBar:HealthBar;
     constructor(skin:string) {
         super(skin);
@@ -15,6 +16,9 @@ class Knight extends KnightShow {
         this.drawBar();
     }
     private drawBar(){
+        if(this._dead){
+            return;
+        }
         if(!this.healthBar){
             this.healthBar = new HealthBar();
             this.healthBar.y = - this.height/2 -10;
@@ -32,5 +36,15 @@ class Knight extends KnightShow {
         }
         this.drawBar();
         super.gotHit();
+    }
+    //region 基本行为
+    //死亡
+    public dead() {
+        this._dead=true;
+        if (this.healthBar){
+            this.removeChild(this.healthBar);
+            this.healthBar = null;
+        }
+        super.dead();
     }
 }
