@@ -1,15 +1,17 @@
 /**
  * 骑士,主人公 或者 NPC 表现层
  */
-import EgretArmatureDisplay = dragonBones.EgretArmatureDisplay;
-
 class KnightShow extends egret.Sprite {
 
-    private skin:string;
+    skin:string;
 
-    constructor(skin:string) {
+    constructor(skin?:string) {
         super();
-        this.skin = skin;
+        if(skin){
+            this.skin = skin;
+        }else{
+            this.skin = "boss2a_png";
+        }
 
         this.init();
     }
@@ -238,7 +240,8 @@ class KnightShow extends egret.Sprite {
         this._moveTimer.stop();
         this.movePoint(null);
         let self = this;
-        egret.Tween.get( this ).to( {scaleY:5}, 5000 ).call(new function(){
+        egret.Tween.get( this).to( {scaleY:5}, 5000 ).call(function(){
+            console.log( "右上角" );
             self.parent.removeChild(self);
         });
     }

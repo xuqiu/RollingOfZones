@@ -5,7 +5,7 @@ class Knight extends KnightShow {
     protected _ap:number;
     protected _dead:boolean;
     private healthBar:HealthBar;
-    constructor(skin:string) {
+    constructor(skin?:string) {
         super(skin);
     }
     public setData(data:any[]){
@@ -29,7 +29,7 @@ class Knight extends KnightShow {
     }
     //被击中
     public gotHit(){
-        this._hp -= 20;
+        this._hp -= 100;
         if(this._hp < 0){
             this._hp = 0;
             this.dead();
@@ -40,6 +40,10 @@ class Knight extends KnightShow {
     //region 基本行为
     //死亡
     public dead() {
+        //死一次就够了
+        if(this._dead){
+            return;
+        }
         this._dead=true;
         if (this.healthBar){
             this.removeChild(this.healthBar);

@@ -1,4 +1,3 @@
-import Timer = egret.Timer;
 /**
  * 子弹,武器的子节点
  */

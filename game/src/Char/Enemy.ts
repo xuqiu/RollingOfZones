@@ -1,7 +1,10 @@
-class Enemy extends Knight {
+class Enemy extends Knight implements IPoolItem{
+    getType():string {
+        return this.skin;
+    }
     private _aiTimer:egret.Timer = new egret.Timer(100);
     private _AI:AI;
-    constructor(skin:string) {
+    constructor(skin?:string) {
         super(skin);
         this._aiTimer.addEventListener(egret.TimerEvent.TIMER, this.runAi, this);
         this._aiTimer.start();
@@ -24,6 +27,8 @@ class Enemy extends Knight {
 
     public dead(){
         this._aiTimer.stop();
+        let idx = Main.enemyArray.indexOf(this);
+        Main.enemyArray.splice(idx);
         super.dead();
     }
 }
