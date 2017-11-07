@@ -1,7 +1,7 @@
-abstract class Pool{
+abstract class Pool<T extends IPoolItem>{
     //缓存池2维是为了区分类型
-    private idlePool:IPoolItem[][];
-    public activePool:IPoolItem[];
+    private idlePool:T[][];
+    public activePool:T[];
     private size:number = 500;//池子大小默认500
     public constructor(size?:number)
     {
@@ -11,25 +11,28 @@ abstract class Pool{
         this.activePool = [];
         this.idlePool = [];
     }
-    public get(type?:string):IPoolItem{
+    public get(type?:any):T{
         let storeInstance;
-        if(type){
-            storeInstance = this.idlePool[type].pop();
+        if(!type){
+            type = 0;
+        }
+        if(!this.idlePool[type]){
+            this.idlePool[type] = [];
         }else{
-            storeInstance = this.idlePool[0].pop();
+            storeInstance = this.idlePool[type].pop();
         }
         if(storeInstance){
             this.activePool.push(storeInstance);
             return storeInstance;
         }else if(this.activePool.length<this.size){
-            let newInstance = this.getInstance(type);
+            let newInstance:T = this.getInstance(type);
             this.activePool.push(newInstance);
             return newInstance;
         } else{
             return null;
         }
     }
-    public preserve(toPreserve:IPoolItem):void{
+    public preserve(toPreserve:T):void{
         let type = toPreserve.getType();
         if(type){
             this.idlePool[type].push(toPreserve);
@@ -39,7 +42,7 @@ abstract class Pool{
         let idx = this.activePool.indexOf(toPreserve);
         this.activePool.splice(idx);
     }
-    abstract getInstance(type?:string):IPoolItem;
+    abstract getInstance(type?:string):T;
 }
 interface IPoolItem{
     getType():string;

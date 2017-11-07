@@ -19,20 +19,22 @@ class Bullet extends particle.GravityParticleSystem {
         super(RES.getRes(particle_png), RES.getRes(particle_type));
         this.particle_png = particle_png;
         this.particle_type = particle_type;
+        this.targetX = targetX;
+        this.targetY = targetY;
     }
 
     public static getBullet(particle_png:string, particle_type:string, targetX:number, targetY:number):Bullet{
-        var cachedBulletArray:Bullet[] = Bullet.BULLET_POOL[particle_type];
+        let cachedBulletArray:Bullet[] = Bullet.BULLET_POOL[particle_type];
         if(cachedBulletArray == null){
             cachedBulletArray = [];
             Bullet.BULLET_POOL[particle_type] = cachedBulletArray;
         }
-        var cachedBullet = cachedBulletArray.pop();
+        let cachedBullet = cachedBulletArray.pop();
         if(cachedBullet == null) {
             cachedBullet = new Bullet(particle_png, particle_type, targetX, targetY);
             cachedBulletArray.push(cachedBullet);
         }else if (particle_png != cachedBullet.particle_png){
-            cachedBullet.particle_png = particle_png
+            cachedBullet.particle_png = particle_png;
             cachedBullet.changeTexture(RES.getRes(particle_png));
         }
         //重置位置
@@ -53,9 +55,9 @@ class Bullet extends particle.GravityParticleSystem {
     private bulletTimer:egret.Timer = new egret.Timer(20, 50);
     public fire() {
 
-        var rX = this.targetX - this.x;
-        var rY = this.targetY - this.y;
-        var ank = Math.sqrt(rX * rX + rY * rY);
+        let rX = this.targetX - this.x;
+        let rY = this.targetY - this.y;
+        let ank = Math.sqrt(rX * rX + rY * rY);
         this._moveX = rX / ank;
         this._moveY = rY / ank;
         this.bulletTimer.addEventListener(egret.TimerEvent.TIMER, this.letBulletFly, this);
@@ -69,11 +71,10 @@ class Bullet extends particle.GravityParticleSystem {
         this.emitterY += this._moveY * this.flySpeed;
     }
 
-    public letBulletFly(evt:egret.TimerEvent) {
+    public letBulletFly() {
         this.fly();
         if(this.checkHit()){
             this.reuse();
-
         }
 
     }
@@ -89,14 +90,15 @@ class Bullet extends particle.GravityParticleSystem {
      */
     private fireRadio:number = 20;//伤害范围
     private checkHit():boolean {
-        let enemy:Enemy = Main.enemyArray[0];
-        let dX = this.emitterX + this.x - enemy.x;
-        let dY = this.emitterY + this.y - enemy.y;
-        let d = Math.sqrt(dX * dX + dY * dY);
-        if(d<this.fireRadio){
-            egret.log("hit");
-            enemy.gotHit();
-            return true;
+        for(let enemy of Main.enemyPool.activePool){
+            let dX = this.emitterX + this.x - enemy.x;
+            let dY = this.emitterY + this.y - enemy.y;
+            let d = Math.sqrt(dX * dX + dY * dY);
+            if(d<this.fireRadio && !enemy.isDead()){
+                egret.log("hit");
+                enemy.gotHit();
+                return true;
+            }
         }
         return false;
     }

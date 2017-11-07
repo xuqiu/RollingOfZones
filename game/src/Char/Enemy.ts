@@ -27,8 +27,6 @@ class Enemy extends Knight implements IPoolItem{
 
     public dead(){
         this._aiTimer.stop();
-        let idx = Main.enemyArray.indexOf(this);
-        Main.enemyArray.splice(idx);
         super.dead();
     }
 }

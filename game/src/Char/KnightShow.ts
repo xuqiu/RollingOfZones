@@ -118,7 +118,7 @@ class KnightShow extends egret.Sprite {
     }
     private resetArmature(){
         let father = this;
-        this.$children.forEach(function(value, index, array){
+        this.$children.forEach(function(value){
             if(value instanceof dragonBones.EgretArmatureDisplay){
                 father.removeChild(value);
             }
@@ -240,10 +240,14 @@ class KnightShow extends egret.Sprite {
         this._moveTimer.stop();
         this.movePoint(null);
         let self = this;
-        egret.Tween.get( this).to( {scaleY:5}, 5000 ).call(function(){
-            console.log( "右上角" );
+        egret.Tween.get( this).to( {scaleY:5,alpha:0}, 200 ).call(function(){
             self.parent.removeChild(self);
+            if(self instanceof Enemy){
+                Main.enemyPool.preserve(self);
+            }
         });
+
+
     }
     //被击中
     public gotHit(){

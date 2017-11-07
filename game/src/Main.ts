@@ -1,7 +1,7 @@
 
 
 class Main extends MainFrame {
-    public static enemyArray:Enemy[] = [];
+    public static enemyPool:EnemyPool = new EnemyPool(100);
     public static SCALE = 1;
 
     public constructor() {
@@ -66,8 +66,7 @@ class Main extends MainFrame {
     /**骨骼角色执行的当前动作索引**/
     /**存放骨骼动画的容器**/
     public static HERO:Hero;
-    
-    public enemy;
+
 
     /**创建骨骼模型**/
     private drawHero():void
@@ -83,14 +82,13 @@ class Main extends MainFrame {
     /**创建骨骼模型**/
     private drawEnemy():void
     {
-        this.enemy = new Enemy("boss4a_png");
-        this.enemy.x = 200;
-        this.enemy.y = 30;
-        this.enemy.setAI(AI.get("straight"));
-        this.enemy.footSize = 3;
-        this.enemy.setData({"name":"boss","hp":77,"hpMAX":100,"ap":20});
-        this.cellMap.addChildAt(this.enemy,999);
-        Main.enemyArray.push(this.enemy);
+        let enemy:Enemy = Main.enemyPool.get("boss4a_png");
+        enemy.x = 200;
+        enemy.y = 30;
+        enemy.setAI(AI.get("straight"));
+        enemy.footSize = 3;
+        enemy.setData({"name":"boss","hp":77,"hpMAX":100,"ap":20});
+        this.cellMap.addChildAt(enemy,999);
     }
     private _time:number;
 

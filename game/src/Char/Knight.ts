@@ -8,7 +8,7 @@ class Knight extends KnightShow {
     constructor(skin?:string) {
         super(skin);
     }
-    public setData(data:any[]){
+    public setData(data:Object){
         this._name=data["name"];
         this._hp=data["hp"];
         this._hpMAX=data["hpMAX"];
@@ -29,7 +29,7 @@ class Knight extends KnightShow {
     }
     //被击中
     public gotHit(){
-        this._hp -= 100;
+        this._hp -= 12;
         if(this._hp < 0){
             this._hp = 0;
             this.dead();
@@ -50,5 +50,8 @@ class Knight extends KnightShow {
             this.healthBar = null;
         }
         super.dead();
+    }
+    public isDead():boolean{
+        return this._dead;
     }
 }
